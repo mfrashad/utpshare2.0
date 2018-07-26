@@ -1,0 +1,61 @@
+body {
+  background-color: #f8f8f8;
+}
+
+.navbar-static-top {
+  margin-bottom: 19px;
+  background-color: #fff;
+  border-color: #e7e7e7;
+  box-shadow: 0 8px 6px -6px #e7e7e7;
+}
+
+.navbar-default .navbar-brand {
+  color: #f8f8f8;
+  font-weight: 900;
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+
+}
+
+.navbar-default .navbar-brand:hover {
+  color: #fff;
+}
+
+.navbar-default .navbar-brand:focus {
+  color: #fff;
+}
+
+.navbar-default .navbar-nav>li>a {
+  color: #444;
+}
+
+.navbar-default .navbar-nav>li>a:hover {
+  color: #000;
+}
+
+.navbar-default .navbar-toggle {
+ border-color: transparent !important;
+}
+
+.navbar-toggle:hover {
+	background-color: #f8f8f8 !important;
+}
+
+.navbar-toggle {
+	background-color: #fff !important;
+}
+
+.btn:hover {
+  background-color: #f8f8f8 !important;
+}
+
+.btn:focus {
+  background-color: #f8f8f8 !important;
+}
+
+.input-group{
+  width: 150%;
+}

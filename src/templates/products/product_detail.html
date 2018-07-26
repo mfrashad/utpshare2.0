@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block style %}
+hr {
+  border-color: #bbb;
+  margin-bottom: 0;
+}
+
+.img-frame {
+  background: #fff;
+  margin: 20px auto;
+}
+.img-frame-lg {
+  max-width: 100em;
+  margin: 20px auto;
+  background: #f8f8f8;
+}
+.img-frame-sm {
+  max-width: 100em;
+  margin: 20px 0 -15px -13px;
+  background: #f8f8f8;
+  box-shadow: 3px 3px 6px rgba(0,0,0,.20);
+}
+.aspect-ratio {
+  position: relative;
+}
+.aspect-ratio-4-3 {
+  padding-bottom: 70%;
+}
+.fit-img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  max-width: 80%;
+  max-height: 90%
+}
+.fit-img-tight {
+  max-width: 100%;
+  max-height: 100%
+}
+
+#scrollbar {
+  height: 30em;
+  margin-top: 0.5em;
+  overflow-y:auto;
+}
+#scrollbar::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 5px;
+  background-color: #f5f5f5;
+}
+#scrollbar::-webkit-scrollbar
+{
+  width: 5px;
+  background-color: #f5f5f5;
+}
+#scrollbar::-webkit-scrollbar-thumb
+{
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color: #bbb;
+}
+
+.first-img-border {
+  border: 3px solid #555
+}
+
+input {
+  text-align: center
+}
+
+.og-price {
+  color: red !important;
+  text-decoration: line-through !important;
+}
+
+#watchlist {
+  margin-bottom: -10px;
+}
+
+{% endblock %}
+
+
+<script>
+{% block jquery %}
+
+// img select
+$(".img-select").click(function(){
+  var image = $(this).attr("src")
+  $("#img").attr("src", image);
+});
+$('.img-border').click(function(){
+  $(this).css("border","3px solid #555");
+  $('.img-border').not(this).css("border","none");
+})
+
+// qty select
+$('.btn-number').click(function(e){
+  e.preventDefault();
+  fieldName = $(this).attr('data-field');
+  type      = $(this).attr('data-type');
+  var input = $("input[name='"+fieldName+"']");
+  var currentVal = parseInt(input.val());
+  if (!isNaN(currentVal)) {
+      if(type == 'minus') {
+          
+          if(currentVal > input.attr('min')) {
+              input.val(currentVal - 1).change();
+          } 
+          if(parseInt(input.val()) == input.attr('min')) {
+              $(this).attr('disabled', true);
+          }
+
+      } else if(type == 'plus') {
+
+          if(currentVal < input.attr('max')) {
+              input.val(currentVal + 1).change();
+          }
+          if(parseInt(input.val()) == input.attr('max')) {
+              $(this).attr('disabled', true);
+          }
+
+      }
+  } else {
+      input.val(0);
+  }
+});
+$('.input-number').focusin(function(){
+   $(this).data('oldValue', $(this).val());
+});
+$('.input-number').change(function() {
+  
+  minValue =  parseInt($(this).attr('min'));
+  maxValue =  parseInt($(this).attr('max'));
+  valueCurrent = parseInt($(this).val());
+  
+  name = $(this).attr('name');
+  if(valueCurrent >= minValue) {
+      $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
+  } else {
+      alert('Sorry, the minimum value was reached');
+      $(this).val($(this).data('oldValue'));
+  }
+  if(valueCurrent <= maxValue) {
+      $(".btn-number[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
+  } else {
+      alert('Sorry, the maximum value was reached');
+      $(this).val($(this).data('oldValue'));
+  }
+});
+$(".input-number").keydown(function (e) {
+    // Allow: backspace, delete, tab, escape, enter and .
+    if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+         // Allow: Ctrl+A
+        (e.keyCode == 65 && e.ctrlKey === true) || 
+         // Allow: home, end, left, right
+        (e.keyCode >= 35 && e.keyCode <= 39)) {
+             // let it happen, don't do anything
+             return;
+    }
+    // Ensure that it is a number and stop the keypress
+    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+        e.preventDefault();
+    }
+});
+
+
+
+{% endblock %}
+</script>
+
+
+{% block content %}
+<div class="row">
+
+  <div class="col-sm-8">
+    <h1><b>{{ object.title }}</b><span style="font-size: 40%;">&emsp;&emsp;&emsp;/&nbsp;{{ object.seller }}</span></h1>
+    <p><b>12 products sold &middot Rating: 4.5/5.0</b></p>
+  <hr/>
+
+  {% if object.productimage_set %}
+  <div class="row">
+    <div class="col-sm-10">
+      <div class="aspect-ratio aspect-ratio-4-3 img-frame-lg">
+        <img id="img" src="{{ object.productimage_set.first.image.url }}" class="fit-img fit-img-tight" alt="No image">
+      </div>
+    </div>
+
+    <div class="col-sm-2" id="scrollbar">
+      {% for img in object.productimage_set.all %}
+        {% if img.image == object.productimage_set.first.image %}
+          <div class="aspect-ratio aspect-ratio-4-3 img-frame-sm img-border first-img-border">
+        {% else %}
+          <div class="aspect-ratio aspect-ratio-4-3 img-frame-sm img-border">
+        {% endif %}
+            <a href="#"><img src="{{ img.image.url }}" class="fit-img fit-img-tight img-select" alt="No image"></a>
+          </div>    
+      {% endfor %}
+    </div>
+
+  </div>
+  {% else %}
+    //just as a placeholder
+    <img id='img' class='img-responsive' src="#" />
+  {% endif %}
+
+  <h4><b>{{ object.stock_count }} stock(s) available.</b></h4>
+
+  <br/>
+  <h4>Description:</h4>
+  <p>{{ object.description }}</p>
+
+  </div>  
+
+  <div class="col-sm-4">
+    <h2><span class="small">RM </span>{{ object.get_html_price }}</h2>
+
+
+    <div class="row">
+      <div class="col-xs-6">
+        <div class="input-group">
+              <span class="input-group-btn">
+                  <button type="button" class="btn btn-default btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
+                      <span class="glyphicon glyphicon-minus"></span>
+                  </button>
+              </span>
+              <input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="100">
+              <span class="input-group-btn">
+                  <button type="button" class="btn btn-default btn-number" data-type="plus" data-field="quant[1]">
+                      <span class="glyphicon glyphicon-plus"></span>
+                  </button>
+              </span> 
+        </div>
+        <input id="add-cart-btn" type="submit" value="Add to Cart" class="form-control btn btn-default btn-block" />
+      </div>
+    </div>
+
+
+    <br/>
+    <p id="watchlist"><i class="fa fa-eye" aria-hidden="true"></i><a href="#"> Add to watchlist</a></p>
+
+    <hr/>
+
+    <p>Share <br/>
+    <a href="#"><i class="fa fa-facebook-square fa-3x"></i></a>
+    <a href="#"><i class="fa fa-instagram fa-3x"></i></a>
+    <a href="#"><i class="fa fa-twitter-square fa-3x"></i></a>
+    <a href="#"><i class="fa fa-pinterest-square fa-3x"></i></a>
+    <a href="#"><i class="fa fa-google-plus-square fa-3x"></i></a>
+    </p>
+
+    <hr/>
+      
+    <h4>Related Products</h4>
+
+    <div class="row">
+      {% for product in related %}
+      <div class='col-xs-6'>
+        {% include "products/product_thumbnail.html" with product=product %}
+      </div>
+      {% cycle '' '</div><div class="row">' %}
+      {% endfor %}
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

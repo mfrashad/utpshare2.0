@@ -1,0 +1,8 @@
+include/
+lib/
+scripts/
+tcl/
+pip-selfcheck.json
+.DS_STORE
+.Python
+*.py[cod]

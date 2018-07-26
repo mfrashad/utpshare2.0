@@ -1,0 +1,13 @@
+<div class="text-center img-frame">
+  {% if product.get_image_url %}
+  <div class="aspect-ratio aspect-ratio-4-3">
+    <a href="{{ product.get_absolute_url }}"><img id='img' class='img-responsive fit-img fit-img-tight' src="{{ product.get_image_url }}" /></a>
+  </div>
+  {% endif %}
+  <p><b>
+    <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
+    <br>
+    <small>RM {{ product.get_html_price }}</small>
+  </b></p>
+  
+</div>

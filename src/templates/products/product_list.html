@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block style %}
+.img-frame {
+  background: #fff;
+  margin: 20px auto;
+}
+.og-price {
+  color: red !important;
+  text-decoration: line-through !important;
+}
+{% endblock %}
+
+
+<script>
+{% block jquery %}
+$(".filter-button").click(function(){
+    var value = $(this).attr('data-filter');
+    
+    if(value == "all") {
+      $('.filter').show('1000');
+    }
+    else {
+      $(".filter").not('.'+value).hide('1000');
+      $('.filter').filter('.'+value).show('3000');
+    }
+});
+{% endblock %}
+</script>
+
+
+{% block content %}
+
+<div align="center">
+<h2><b>Product Gallery</b></h2>
+  <button class="btn btn-default filter-button" data-filter="all">All</button>
+  {% for category in category_list %}
+  <button class="btn btn-default filter-button" data-filter="{{ category.slug }}">{{ category }}</button>
+  {% endfor %}
+</div>
+<br>
+
+<div class='row'>
+  {% for category in category_list %}
+    {% for product in category.product_set.all %}
+      <div class='col-sm-3 col-xs-6 filter {{ category.slug }}'>
+      {% include "products/product_thumbnail.html" with product=product %}
+      </div>
+      {% cycle '' '' '' '</div><div class="row">' %}
+    {% endfor %}
+  {% endfor %}
+</div>
+
+{% endblock %}
