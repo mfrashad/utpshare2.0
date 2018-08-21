@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block style %}
+a:link, a:hover, a:visited, a:active {
+  text-decoration: none;
+}
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <h4><a href="{% url 'products:tags' %}">< BACK</a></h4>
+  <div class="tn-set-container">
+    {% for tag_product in tag_products %}
+      {% include "products/product_thumbnail.html" with product=tag_product %}
+    {% empty %}
+      <p>No Products yet.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

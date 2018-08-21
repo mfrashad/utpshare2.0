@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block style %}
+.tag-list-container {
+  display: flex;
+  flex-wrap:wrap;
+  align-items:flex-start;
+}
+.tag-list-item {
+  flex-basis: 50%;
+  margin: 5px 0;
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Tags</h1>
+
+  <div class="tag-list-container">
+    {% for tag in tag_list %}
+    <div class="tag-list-item">
+      <a href="{{ tag.get_absolute_url }}">{{ tag }}</a> ({{ tag.count }})
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

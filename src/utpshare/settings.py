@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import django
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -39,9 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Third party apps
     'crispy_forms',
+    'tagulous',
     # My apps
     'products',
     'seller',
+    'billing',
+    'analytics',
+    'widget_tweaks',
+    # Others
+    'django.forms',
 ]
 
 MIDDLEWARE = [
@@ -56,10 +63,21 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'utpshare.urls'
 
+SERIALIZATION_MODULES = {
+    'xml':    'tagulous.serializers.xml_serializer',
+    'json':   'tagulous.serializers.json',
+    'python': 'tagulous.serializers.python',
+    'yaml':   'tagulous.serializers.pyyaml',
+}
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+            'templates',
+            django.__path__[0] + '/forms/templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -135,3 +153,5 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "media_roo
 
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'

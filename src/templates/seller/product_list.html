@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+.page-header {
+  margin-top: 20px;
+}
+{% endblock %}
+
+
+{% block javascript %}
+<script src="{% static 'js/seller-product-list.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="page-header">{{ seller|title }}'s Inventory</h1>
+
+  <!-- ADD BUTTON -->
+  <p>
+    <button type="button"
+            class="btn btn-success js-create-product"
+            data-url="{% url 'seller:modal_product_create' %}">
+      <span class="glyphicon glyphicon-plus"></span>
+      New product
+    </button>
+  </p>
+
+  <!-- PRODUCT LIST -->
+  <table class="table table-bordered table-hover table-responsive" id="product-table">
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Image</th>
+        <th>RM</th>
+        <th>Tags</th>
+        <th>Date created</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include 'seller/partial_product_list.html' %}
+    </tbody>
+  </table>
+</div>
+
+<!-- GENERIC MODAL VIEW -->
+  <div class="modal fade" id="modal-product">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      </div>
+    </div>
+  </div>
+{% endblock %}

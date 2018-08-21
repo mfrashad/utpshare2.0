@@ -1,51 +1,91 @@
 {% extends "base.html" %}
 
 {% block style %}
-hr {
-  border-color: #bbb;
-  margin-bottom: 0;
+* {
+  font-family:roboto;
+  margin:0; 
+  padding:0; 
+  box-sizing:border-box;
+}
+.dktp-pre-margin {
+  margin-top: 20px;
 }
 
-.img-frame {
-  background: #fff;
-  margin: 20px auto;
+/* PRODUCT IMAGE MOBILE */
+.full-width-container {
+  margin: 0 auto;
 }
-.img-frame-lg {
-  max-width: 100em;
-  margin: 20px auto;
-  background: #f8f8f8;
+.mb-product-img-container {
+  display:none;
 }
-.img-frame-sm {
-  max-width: 100em;
-  margin: 20px 0 -15px -13px;
-  background: #f8f8f8;
-  box-shadow: 3px 3px 6px rgba(0,0,0,.20);
-}
-.aspect-ratio {
+.carousel-img-frame {
   position: relative;
+  width: 100%;
+  padding-bottom: 73.8%;
 }
-.aspect-ratio-4-3 {
-  padding-bottom: 70%;
+
+
+/* PRODUCT TITLE */
+.mb-product-title {
+  display: none;
 }
-.fit-img {
+.two-col-bar {
+  align-items: center;
+}
+.two-col-bar-left {
+  padding: 5px 10px 5px 0;
+  flex: 1;
+}
+.two-col-bar-right {
+  padding: 5px 10px;
+}
+.dktp-product-title {
+  font-size: 1.857em;
+  display: initial;
+}
+
+
+/* PRODUCT IMAGE DESKTOP */
+.dktp-product-img-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 63%;
+}
+.main-img-col {
+  position: absolute;
+  width: 83.3333%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 3px solid #ccc;
+}
+.side-img-col {
+  position: absolute;
+  width: 16.6666%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 83.3333%;
+  overflow-y:auto;
+}
+.side-img-frame {
+  position: relative;
+  width: 100%;
+  padding-bottom: 67%;
+  border: 3px solid #ccc;
+}
+.tn-img {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   margin: auto;
-  max-width: 80%;
-  max-height: 90%
-}
-.fit-img-tight {
   max-width: 100%;
   max-height: 100%
-}
-
-#scrollbar {
-  height: 30em;
-  margin-top: 0.5em;
-  overflow-y:auto;
 }
 #scrollbar::-webkit-scrollbar-track
 {
@@ -58,28 +98,159 @@ hr {
   width: 5px;
   background-color: #f5f5f5;
 }
+
 #scrollbar::-webkit-scrollbar-thumb
 {
   border-radius: 5px;
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
   background-color: #bbb;
 }
-
 .first-img-border {
-  border: 3px solid #555
+  border: 3px solid #555;
+}
+.singular-img-frame {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 3px solid #ccc;
 }
 
-input {
-  text-align: center
+
+/* PRODUCT HEADER INFO */
+.product-header-info {
+  display:flex;
 }
 
-.og-price {
-  color: red !important;
-  text-decoration: line-through !important;
+
+/* SELLER INFO */
+.seller-info{
+  display:flex;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-top: 1px solid #9999;
+}
+.seller-pic{
+  width: 50px;
+  height: 50px;
+  background:#000;
+  border-radius: 50%;
+}
+.seller-info-left{
+  flex: 1 1 0;
+  padding: 0 10px;
+  font-size: 1.143em;
+  word-break: break-all;
+}
+.seller-info-right{
+  background:red;
+  padding: 8px 12px;
+}
+.seller-info-right a:link, .seller-info-right a:hover, .seller-info-right a:visited, .seller-info-right a:active {
+  color: #fff;
+  font-weight:1000;
+  text-decoration: none;
 }
 
-#watchlist {
-  margin-bottom: -10px;
+
+/* PRODUCT DESCRIPTION */
+.product-desc{
+  padding-bottom:10px;
+}
+
+
+/* PRODUCT REVIEW */
+.review-section {
+  border-top: 1px solid #9999;
+  padding-bottom: 20px;
+}
+.review {
+  display: flex;
+  align-items: flex-start;
+}
+.review-pic{
+  width:40px;
+  height:40px;
+  background:#000;
+  border-radius: 50%;
+}
+.review-body {
+  flex: 1;
+  padding-left: 20px;
+}
+.hidePartialContent {
+  overflow: hidden;
+  line-height: 20px;
+  height: 60px;
+}
+.hideContent {
+  display: initial;
+}
+.showContent {
+  display: initial;
+}
+
+
+/* PRODUCT PRICE */
+.price-section {
+  background: #ccc7;
+  padding: 10px 25px;
+}
+.product-price {
+  font-size: 2.143em;
+}
+.price-nego-tag {
+  font-size: 0.9em;
+  display: inline-block;
+  background: #058;
+  color:#fff;
+  padding: 3px 8px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+.input-number {
+  text-align: center;
+}
+
+
+/* RELATED PRODUCT */
+.rel-product-section {
+  margin: 30px 0;
+}
+
+
+/* GENERAL */
+a:link, a:hover, a:visited, a:active {
+  color: #000;
+  font-weight:550;
+  text-decoration: none;
+}
+
+@media only screen and (max-width: 768px) {
+  .dktp-pre-margin {
+    margin-top: 0;
+  }
+  .mb-product-img-container {
+    display:initial;
+  }
+  .mb-product-title {
+    display: flex;
+  }
+  .dktp-product-title {
+    display: none;
+  }
+  .dktp-product-img-container {
+    display:none;
+  }
+  .product-side-info {
+    display: none;
+  }
+  .hideContent {
+    display: none;
+  }
 }
 
 {% endblock %}
@@ -87,15 +258,15 @@ input {
 
 <script>
 {% block jquery %}
-
 // img select
-$(".img-select").click(function(){
-  var image = $(this).attr("src")
-  $("#img").attr("src", image);
+$(".img-select").click(function(e){
+  e.preventDefault();
+  var image = $(this).children().attr("src")
+  $("#mainImg").attr("src", image);
 });
 $('.img-border').click(function(){
   $(this).css("border","3px solid #555");
-  $('.img-border').not(this).css("border","none");
+  $('.img-border').not(this).css("border","3px solid #ccc");
 })
 
 // qty select
@@ -114,16 +285,13 @@ $('.btn-number').click(function(e){
           if(parseInt(input.val()) == input.attr('min')) {
               $(this).attr('disabled', true);
           }
-
       } else if(type == 'plus') {
-
           if(currentVal < input.attr('max')) {
               input.val(currentVal + 1).change();
           }
           if(parseInt(input.val()) == input.attr('max')) {
               $(this).attr('disabled', true);
           }
-
       }
   } else {
       input.val(0);
@@ -168,105 +336,201 @@ $(".input-number").keydown(function (e) {
     }
 });
 
+// show more btn
+$(".show-more a").on("click", function(e) {
+  e.preventDefault();
+  var $content = $(this).parent().prev("div.review-content");
+  var linkText = $(this).text().toUpperCase();
 
+  if(linkText === "SHOW MORE"){
+    linkText = "Show less";
+    $content.switchClass("hidePartialContent", "showContent", 0);
+  } else {
+    linkText = "Show more";
+    $content.switchClass("showContent", "hidePartialContent", 0);
+  }
+
+  $(this).text(linkText);
+})
+
+
+$(".further-info-toggle a").on("click", function(e) {
+  e.preventDefault();
+  var $content = $(".product-main-info");
+  var glyphicon = $(this).children("span")
+  var hasGlyphicon = glyphicon.hasClass("glyphicon-chevron-right");
+
+  if(hasGlyphicon){
+    glyphicon.switchClass("glyphicon-chevron-right", "glyphicon-chevron-down", 0);
+    $content.switchClass("hideContent", "showContent", 0);
+  } else {
+    glyphicon.switchClass("glyphicon-chevron-down", "glyphicon-chevron-right", 0);
+    $content.switchClass("showContent", "hideContent", 0);
+  }
+})
 
 {% endblock %}
 </script>
 
 
 {% block content %}
-<div class="row">
+<!-- PRODUCT IMAGE MOBILE -->
+<div class="full-width-container mb-product-img-container">
+  <div id="productImgCarousel" class="carousel" data-interval="false">
+    <!-- indicators -->
+    {% if object.productimage_set.count > 1 %}
+      <ol class="carousel-indicators">
+        {% for img in object.productimage_set.all %}
+          <li data-target="#productImgCarousel" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.counter0 == 0 %}active{% endif %}"></li>
+        {% endfor %}
+      </ol>
+    {% endif %}
 
-  <div class="col-sm-8">
-    <h1><b>{{ object.title }}</b><span style="font-size: 40%;">&emsp;&emsp;&emsp;/&nbsp;{{ object.seller }}</span></h1>
-    <p><b>12 products sold &middot Rating: 4.5/5.0</b></p>
-  <hr/>
-
-  {% if object.productimage_set %}
-  <div class="row">
-    <div class="col-sm-10">
-      <div class="aspect-ratio aspect-ratio-4-3 img-frame-lg">
-        <img id="img" src="{{ object.productimage_set.first.image.url }}" class="fit-img fit-img-tight" alt="No image">
-      </div>
-    </div>
-
-    <div class="col-sm-2" id="scrollbar">
+    <!-- wrapper for slides -->
+    <div class="carousel-inner">
       {% for img in object.productimage_set.all %}
-        {% if img.image == object.productimage_set.first.image %}
-          <div class="aspect-ratio aspect-ratio-4-3 img-frame-sm img-border first-img-border">
-        {% else %}
-          <div class="aspect-ratio aspect-ratio-4-3 img-frame-sm img-border">
-        {% endif %}
-            <a href="#"><img src="{{ img.image.url }}" class="fit-img fit-img-tight img-select" alt="No image"></a>
-          </div>    
-      {% endfor %}
-    </div>
-
-  </div>
-  {% else %}
-    //just as a placeholder
-    <img id='img' class='img-responsive' src="#" />
-  {% endif %}
-
-  <h4><b>{{ object.stock_count }} stock(s) available.</b></h4>
-
-  <br/>
-  <h4>Description:</h4>
-  <p>{{ object.description }}</p>
-
-  </div>  
-
-  <div class="col-sm-4">
-    <h2><span class="small">RM </span>{{ object.get_html_price }}</h2>
-
-
-    <div class="row">
-      <div class="col-xs-6">
-        <div class="input-group">
-              <span class="input-group-btn">
-                  <button type="button" class="btn btn-default btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
-                      <span class="glyphicon glyphicon-minus"></span>
-                  </button>
-              </span>
-              <input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="100">
-              <span class="input-group-btn">
-                  <button type="button" class="btn btn-default btn-number" data-type="plus" data-field="quant[1]">
-                      <span class="glyphicon glyphicon-plus"></span>
-                  </button>
-              </span> 
+      <div class="item{% if forloop.counter0 == 0 %} active{% endif %}">
+        <div class="carousel-img-frame">
+          <img src="{{ img.image_url }}" alt="No image" class="tn-img">
         </div>
-        <input id="add-cart-btn" type="submit" value="Add to Cart" class="form-control btn btn-default btn-block" />
       </div>
-    </div>
-
-
-    <br/>
-    <p id="watchlist"><i class="fa fa-eye" aria-hidden="true"></i><a href="#"> Add to watchlist</a></p>
-
-    <hr/>
-
-    <p>Share <br/>
-    <a href="#"><i class="fa fa-facebook-square fa-3x"></i></a>
-    <a href="#"><i class="fa fa-instagram fa-3x"></i></a>
-    <a href="#"><i class="fa fa-twitter-square fa-3x"></i></a>
-    <a href="#"><i class="fa fa-pinterest-square fa-3x"></i></a>
-    <a href="#"><i class="fa fa-google-plus-square fa-3x"></i></a>
-    </p>
-
-    <hr/>
-      
-    <h4>Related Products</h4>
-
-    <div class="row">
-      {% for product in related %}
-      <div class='col-xs-6'>
-        {% include "products/product_thumbnail.html" with product=product %}
+      {% empty %}
+      <div class="item active">
+        <div class="carousel-img-frame">
+          <img src="{{ object.get_image_url }}" alt="No image" class="tn-img">
+        </div>
       </div>
-      {% cycle '' '</div><div class="row">' %}
       {% endfor %}
     </div>
 
+    <!-- left and right controls -->
+    {% if object.productimage_set.count > 1 %}
+      <a class="left carousel-control" href="#productImgCarousel" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="right carousel-control" href="#productImgCarousel" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    {% endif %}
   </div>
-
 </div>
+
+
+<div class="container">
+  <div class="row dktp-pre-margin">
+    <div class="col-md-8">
+      <!-- PRODUCT TITLE -->
+      <div class="two-col-bar mb-product-title">
+        <div class="two-col-bar-left">
+          <h4>
+            <strong>{{ object.title }}</strong><br/>
+            <small><strong>babywei&emsp;&emsp;8<span style="font-size:90%;">&ensp;AVAILABLE</span></strong>&emsp;&emsp;<span class="glyphicon glyphicon-share"></span></small>
+          </h4>
+        </div>
+        <div class="two-col-bar-right further-info-toggle">
+          <a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a>
+        </div>
+      </div>
+      <div class="dktp-product-title">
+        <strong>{{ object.title }}</strong>&emsp;<span style="font-size:70%"><a href="{{ object.get_edit_url }}">Edit</a></span>
+      </div>
+      <!-- PRODUCT IMAGE DESKTOP -->
+      <div class="dktp-product-img-container">
+        {% if object.productimage_set.count > 1 %}
+          <div class="main-img-col">
+            <img class="tn-img" id="mainImg" src="{{ object.get_image_url }}">
+          </div>
+          <div class="side-img-col" id="scrollbar">
+              {% for img in object.productimage_set.all %}
+                <a href="#">
+                  <div class="side-img-frame img-border img-select{% if img.image == object.productimage_set.first.image %} first-img-border{% endif %}">
+                    <img src="{{ img.image_url }}" class="tn-img" alt="No image">
+                  </div> 
+                </a>
+              {% endfor %}
+          </div>
+        {% else %}
+          <div class="singular-img-frame">
+            <img class="tn-img" id="img" src="{{ object.get_image_url }}">
+          </div>
+        {% endif %}
+      </div>
+      <!-- PRODUCT INFO -->
+      <div class="product-side-info"">
+        <div class="two-col-bar product-header-info">
+          <div class="two-col-bar-left">
+            <h4><strong>2<span style="font-size:70%;">&ensp;SOLD</span>&emsp;&emsp;8<span style="font-size:70%;">&ensp;AVAILABLE</span></strong></h4>
+          </div>
+          <div class="two-col-bar-right">
+            <a href="#"><span class="glyphicon glyphicon-share"></span>&ensp;SHARE</a>
+          </div>
+        </div>
+        <div class="seller-info">
+          <div class="seller-pic"></div>
+          <div class="seller-info-left">
+            <p><strong>babywei</strong><br/>
+            <small>Posted on 3 May 2018</small></p>
+          </div>
+          <div class="seller-info-right"><a href="#">FOLLOW&ensp;21</a></div>
+        </div>
+      </div>
+
+      <div class="product-main-info hideContent">
+        <div class="product-desc"><p>{{ object.description }}</p></div>
+        <!-- REVIEW -->
+        <div class="review-section">
+          <h4><strong>4.5/5.0<span style="font-size:70%;">&ensp;RATED BY 3</span></strong></h4>
+          <div class="review">
+            <div class="review-pic"></div>
+            <div class="review-body">
+              <p class="review-heading"><strong>babypanda</strong><span style="font-size:90%;">&emsp;2 months ago</span></p>
+              <div class="review-content hidePartialContent"><p>A bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphsA bunch of useless paragraphs</p></div>
+              <div class="show-more"><a href="#">Show more</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="col-md-4">
+      <!-- PRODUCT PRICE -->
+      <div class="price-section">
+        <div class="product-price"><span class="small">RM </span>{{ object.get_html_price }}</div>
+        <div class="price-nego-tag">NEGOTIABLE</div>
+        <div class="input-group">
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
+              <span class="glyphicon glyphicon-minus"></span>
+            </button>
+          </span>
+          <input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="100">
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default btn-number" data-type="plus" data-field="quant[1]">
+              <span class="glyphicon glyphicon-plus"></span>
+            </button>
+          </span> 
+        </div>
+
+        <input id="add-cart-btn" type="submit" value="Add to Cart" class="form-control btn btn-default btn-block" />
+        <br/>
+        <p id="watchlist"><i class="fa fa-eye" aria-hidden="true"></i><a href="#">&ensp;Track item</a>&ensp;(8)</p>
+      </div>
+
+      <!-- RELATED PRODUCTS -->
+      <div class="rel-product-section">
+        <h5><strong>RELATED</strong></h5>
+        {% for product in related %}
+          {% include "products/product_card.html" with product=product card_size="sm" %}
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
 {% endblock %}

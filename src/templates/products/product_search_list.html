@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block style %}
+.result-title {
+  font-size: 1.428em;
+  margin-top: 10px;
+}
+@media only screen and (max-width: 550px) {
+  .result-title {
+    font-size: 0.9em;
+  }
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="result-title">{{title}}</div>
+  {% for product in product_list %}
+    {% include "products/product_card.html" with product=product card_size="std" %}
+  {% endfor %}
+</div>
+{% endblock %}

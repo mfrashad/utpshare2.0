@@ -1,0 +1,25 @@
+{% for product in products %} 
+  <tr>
+    <td class="col-sm-3"><a href='{{ product.get_absolute_url }}'>{{ product.title|truncatechars:50 }}</td>
+    <td class="col-sm-2 text-center"><a href='{{ product.get_absolute_url }}'><img src='{{ product.get_image_url }}' style='max-width:100px; max-height: 100px;'/></a></td>
+    <td class="col-sm-1"><b> {{ product.price }}</b></td>
+    <td class="col-sm-2"> {{ product.tags }}</td>
+    <td class="col-sm-2">{{ product.timestamp|date:"D, M d" }}</td>
+    <td class="col-sm-2">
+      <button type="button"
+              class="btn btn-warning btn-sm js-update-product"
+              data-url="{% url 'seller:modal_product_update' product.slug %}">
+        <span class="glyphicon glyphicon-pencil"></span> Edit
+      </button>
+      <button type="button"
+              class="btn btn-danger btn-sm js-delete-product"
+              data-url="{% url 'seller:modal_product_delete' product.slug %}">
+        <span class="glyphicon glyphicon-trash"></span> Delete
+      </button>
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="5" class="text-center bg-warning">No products yet.</td>
+  </tr>
+{% endfor %}

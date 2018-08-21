@@ -1,0 +1,35 @@
+<div class="product-card-wrapper">
+  <a href="{{ product.get_absolute_url }}">
+    {% if card_size == "std" %}
+      <div class="card-frame">
+        <div class="card-img-frame">
+          <img class="card-img" src="{{ product.get_image_url }}">
+        </div>
+        <div class="card-txt-frame">
+          <div class="card-txt-header">{{ product.title }}</div>
+          <div class="card-txt-body">
+            {{ product.seller.user.username}} &middot; RM {{ product.get_html_price}}&emsp;<span class="price-nego-tag">NEGOTIABLE</span>
+            <div class="desc">{{ product.description|truncatewords:25 }}</div>
+          </div>
+        </div>
+      </div>
+    {% elif card_size == "sm" %}
+      <div class="card-frame-sm">
+        <div class="card-img-frame-sm">
+          <img class="card-img" src="{{ product.get_image_url }}">
+        </div>
+        <div class="card-txt-frame-sm">
+          <div class="card-txt-header-sm">{{ product.title }}</div>
+          <div class="card-txt-body">
+            {{ product.seller.user.username}} &middot; RM {{ product.get_html_price}}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </a>
+</div>
+
+
+
+
+

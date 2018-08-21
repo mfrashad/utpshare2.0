@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block style %}
+.pull-right {
+  float: right;
+}
+.pull-left {
+  float: left;
+}
+.col-primary {
+  width: 85%;
+}
+.col-sidebar {
+  padding-top: 20px;
+  width: 15%;
+}
+
+
+.img-frame {
+  background: #fff;
+  margin: 20px auto;
+}
+.aspect-ratio {
+  position: relative;
+}
+.aspect-ratio-4-3 {
+  padding-bottom: 70%;
+}
+.fit-img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  max-width: 80%;
+  max-height: 90%
+}
+.fit-img-tight {
+  max-width: 100%;
+  max-height: 100%
+}
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+  <h1>{{ title }}</h1>
+
+  {% if apply_form %}
+
+  <form method='POST' action=''> {% csrf_token %}
+    <h3>Rules of the Marketplace</h3>
+    <ol>
+      <li>
+        Be kind
+      </li>
+      <li>
+        Sell well
+      </li>
+      <li>
+        Don't steal
+      </li>
+    </ol> 
+  {{ apply_form.as_p }} 
+  <br/>
+  <input type='submit'/>
+  </form>
+
+  {% endif %}
+
+
+
+  {% if products %}
+  <div class="pull-right col-sidebar">
+    <h4>My Products<br/><small><a href='{% url "seller:product_create" %}'>Add</a> | <a href='{% url "seller:product_list" %}'>View All</a></small></h4>
+
+    {% for product in products %}
+    {% include "products/product_thumbnail.html" with product=product %}
+    {% endfor %}
+
+  </div>
+
+  {% endif %}
+
+
+
+  {% if transactions %}
+  <div class='pull-left col-primary '>
+  <h3>Today's sales are ${{ today_sales }}</h3>
+  {% include "sellers/transaction_list.html" with transaction_list=transactions_today %}
+
+  <br/>
+    <h3>Recent Transaction History (Total Sales: ${{ total_sales }})</h3>
+  {% include "sellers/transaction_list.html" with transaction_list=transactions %}
+
+
+  <p>
+  <a href='{% url "seller:transactions" %}'>View all transactions</a>
+  </p>
+  </div>
+
+
+  {% endif %}
+
+</div>
+
+
+{% endblock %}

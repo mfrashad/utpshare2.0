@@ -1,13 +1,36 @@
 {% extends "base.html" %}
 
 {% block style %}
-.img-frame {
-  background: #fff;
-  margin: 20px auto;
+.gallery-nav-bar {
+  text-align: center;
+  margin-top: 10px;
 }
-.og-price {
-  color: red !important;
-  text-decoration: line-through !important;
+.gallery-title {
+  font-size: 2.143em;
+}
+.gallery-nav-btn-gp {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center
+}
+.gallery-nav-btn {
+  padding: 10px;
+  background: #058;
+  border: 1px solid #f8f8f8;
+}
+.gallery-nav-btn a:link, .gallery-nav-btn a:hover, .gallery-nav-btn a:visited, .gallery-nav-btn a:active {
+  color: #fff;
+  text-decoration: none;
+}
+
+@media only screen and (max-width: 576px) {
+    .gallery-title {
+      font-size: 1.2em;
+    }
+    .gallery-nav-btn {
+      padding: 5px;
+      font-size: 0.9em;
+    }
 }
 {% endblock %}
 
@@ -18,7 +41,7 @@ $(".filter-button").click(function(){
     var value = $(this).attr('data-filter');
     
     if(value == "all") {
-      $('.filter').show('1000');
+      $('.filter').show('3000');
     }
     else {
       $(".filter").not('.'+value).hide('1000');
@@ -30,25 +53,23 @@ $(".filter-button").click(function(){
 
 
 {% block content %}
+<div class="container">
+  <div class="gallery-nav-bar">
+    <div class="gallery-title">Product Gallery</div>
+    <div class="gallery-nav-btn-gp">
+      <div class="gallery-nav-btn filter-button" data-filter="all"><a href="#">All</a></div>
+      {% for category in category_list %}
+        <div class="gallery-nav-btn filter-button" data-filter="{{ category.slug }}"><a href="#">{{ category }}</a></div>
+      {% endfor %}
+    </div>
+  </div>
 
-<div align="center">
-<h2><b>Product Gallery</b></h2>
-  <button class="btn btn-default filter-button" data-filter="all">All</button>
-  {% for category in category_list %}
-  <button class="btn btn-default filter-button" data-filter="{{ category.slug }}">{{ category }}</button>
-  {% endfor %}
-</div>
-<br>
-
-<div class='row'>
-  {% for category in category_list %}
-    {% for product in category.product_set.all %}
-      <div class='col-sm-3 col-xs-6 filter {{ category.slug }}'>
-      {% include "products/product_thumbnail.html" with product=product %}
-      </div>
-      {% cycle '' '' '' '</div><div class="row">' %}
+  <div class="tn-set-container">
+    {% for category in category_list %}
+      {% for product in category.product_set.all %}
+        {% include "products/product_thumbnail.html" with product=product %}
+      {% endfor %}
     {% endfor %}
-  {% endfor %}
+  </div>
 </div>
-
 {% endblock %}

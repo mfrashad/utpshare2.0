@@ -3,7 +3,12 @@ from django.db.models.signals import pre_save
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
+
 from seller.models import SellerAccount
+
+
+from django_resized import ResizedImageField
+import tagulous.models
 
 # Create your models here.
 
@@ -21,6 +26,8 @@ class Product(models.Model):
   sale_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
   stock_count = models.PositiveSmallIntegerField(default=1)
   category = models.ForeignKey('Category', blank=True, null=True, on_delete=models.CASCADE)
+  timestamp = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
+  tags = tagulous.models.TagField(to="Tag")
 
   objects = ProductManager()
 
@@ -30,11 +37,16 @@ class Product(models.Model):
   def get_absolute_url(self):
     return reverse("products:product_detail", kwargs={"slug": self.slug})
 
+  def get_edit_url(self):
+    return reverse("seller:product_update", kwargs={"slug": self.slug})
+
   def get_image_url(self):
     img = self.productimage_set.first()
     if img:
       return img.image.url
-    return img  #None
+    else:
+      return '/static/img/default_image.png'
+
 
   def get_html_price(self):
     if self.sale_price is not None:
@@ -70,6 +82,16 @@ def product_pre_save_receiver(sender, instance, *args, **kwargs):
 pre_save.connect(product_pre_save_receiver, sender=Product)
 
 
+class Tag(tagulous.models.TagModel):
+  class TagMeta:
+    force_lowercase = True
+    max_count = 10
+    get_absolute_url=lambda tag: reverse(
+            'products:tag_detail', kwargs={'slug': tag.slug}
+        )
+
+
+
 # Product Images
 def image_upload_to(instance, filename):
   title = instance.product.title
@@ -79,12 +101,25 @@ def image_upload_to(instance, filename):
   return "products/%s/%s" %(slug, new_filename)
 
 
+import PIL
+from PIL import Image
+from django.utils.six import StringIO
+
+
 class ProductImage(models.Model):
   product = models.ForeignKey(Product, on_delete=models.CASCADE)
-  image = models.ImageField(upload_to=image_upload_to)
+  image = ResizedImageField(size=[700, 500], upload_to=image_upload_to, blank=True, null=True)
+  # size[w, h]
 
   def __str__(self):
     return self.product.title
+
+  @property
+  def image_url(self):
+    if self.image and hasattr(self.image, 'url'):
+      return self.image.url
+    else:
+      return '/static/img/default_image.png'
 
 
 class Category(models.Model):
@@ -99,3 +134,5 @@ def category_pre_save_receiver(sender, instance, *args, **kwargs):
     instance.slug = slugify(instance.title)
 
 pre_save.connect(category_pre_save_receiver, sender=Category)
+
+

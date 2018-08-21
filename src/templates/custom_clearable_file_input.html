@@ -1,0 +1,13 @@
+<!-- DJANGO WIDGET TWEAK -->
+<!-- ONLY COMPATIBLE WITH DJANGO >=1.11 -->
+<!-- can be used as custom input template -->
+
+{% if widget.is_initial %}
+<!--   <span>{{ widget.initial_text }}</span>: <a href="{{ widget.value.url }}">{{ widget.value }}</a>
+  {% if not widget.required %}
+    <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}"/>
+    <label for="{{ widget.checkbox_id }}">{{ widget.clear_checkbox_label }}</label>
+  {% endif %} -->
+  <span><b>{{ widget.input_text }}</b></span>:
+{% endif %}
+<input type="{{ widget.type }}" name="{{ widget.name }}"{% include "templates/django/forms/widgets/attrs.html" %}/>

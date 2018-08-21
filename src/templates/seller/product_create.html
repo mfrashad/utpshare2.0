@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block style %}
+/***********************
+  CUSTOM BTN
+************************/
+.btn {
+    padding: 14px 24px;
+    border: 0 none;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: 0 none;
+}
+.btn:focus, .btn:active:focus, .btn.active:focus {
+    outline: 0 none;
+}
+/***********************
+  CUSTOM BUTTON PRIMARY
+************************/
+.btn-primary {
+    background: #0099cc;
+    color: #fff;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+    background: #33a6cc;
+}
+.btn-primary:active, .btn-primary.active {
+    background: #007299;
+    box-shadow: none;
+}
+.btn.outline {
+    background: none;
+    padding: 12px 22px;
+}
+.btn-primary.outline {
+    border: 2px solid #0099cc;
+    color: #0099cc;
+}
+.btn-primary.outline:hover, .btn-primary.outline:focus, .btn-primary.outline:active, .btn-primary.outline.active, .open > .dropdown-toggle.btn-primary {
+    color: #33a6cc;
+    border-color: #33a6cc;
+    background: #e7e7e7;
+}
+.btn-primary.outline:active, .btn-primary.outline.active {
+    border-color: #007299;
+    color: #007299;
+    box-shadow: none;
+    background: #e7e7e7;
+}
+/***********************
+  CUSTOM BUTTON DEFAULT
+************************/
+.btn-default {
+    background: #f8f8f8;
+    color: #000;
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+  background: #f8f8f8;
+}
+.btn-default:active, .btn-default.active {
+    background: #f4f4f4 !important;
+}
+{% endblock %}
+
+<script>
+{% block jquery %}
+var form_count = {{ product_image_formset.total_form_count }};
+
+function cloneForm(selector, prefix) {
+    form_count++;
+    var newElement = $(selector).clone(true);
+    var form_index = newElement.find('input').eq(1).attr('name').split('-')[1];
+    newElement.find(':input').each(function() {
+        var name = $(this).attr('name').replace('-' + form_index + '-','-' + (form_count-1) + '-');      
+        var id = 'id_' + name;
+        $(this).attr({'name': name, 'id': id}).val(''); 
+    });
+    newElement.find('label').each(function() {
+        var newFor = $(this).attr('for').replace('-' + form_index + '-','-' + (form_count-1) + '-');
+        $(this).attr('for', newFor);
+    });
+    newElement.find('img').each(function() {
+        var newId = $(this).attr('id').replace('-' + form_index + '-','-' + (form_count-1) + '-');
+        var src = '#';
+        $(this).attr({'id': newId, 'src': src});
+    });
+    $('#id_' + prefix + '-TOTAL_FORMS').val(form_count);
+    //dynamically adding csrf token to the new form added
+    var csrf = $('<input/>')
+                  .attr("type", "hidden")
+                  .attr("name", "csrfmiddlewaretoken")
+                  .attr("value", "{{csrf_token}}");
+    $(csrf).appendTo(newElement);
+    $(selector).after(newElement);
+}
+
+//Upload image to form && Clone form
+$('#img-upload').click(function(){
+  var $el = $(this);
+  var isSelected = $el.attr("first-click-done");  //false by default
+
+  if(isSelected != 'true'){
+    // first click
+    $('#id_form-0-image').trigger('click');
+    $('.panel').css('visibility', 'visible');
+    $el.attr('first-click-done', true)
+  } else {
+    cloneForm('div.panel-group:last', 'form');
+    $('#id_form-' + (form_count-1) + '-image').trigger('click');
+  }
+});
+
+//Preview image
+$('input[type=file]').change(function() {
+  var index = $(this).attr('name').split('-')[1];
+  if (this.files && this.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      $('#image-' + index + '-preview').attr('src', e.target.result);
+    }
+    reader.readAsDataURL(this.files[0]);
+  }
+});
+
+//Delete image form
+$(".delete_btn").click(function(){
+  var form = $(this).parent().parent().parent();
+  var form_index = form.find('input').eq(1).attr('name').split('-')[1];
+  if (form_count > 1) {
+    form.hide('3000', function(){
+      $(this).remove();
+    });
+    
+    form_count--;
+    $('#id_form-TOTAL_FORMS').val(form_count);
+    
+    var counter = parseInt(form_index) + 1;
+    var next_form = form.next();
+    
+    // Update form element index
+    for (i=counter; i <= form_count; i++) {
+      // console.log(i);
+      next_form.find(':input').each(function() {
+        var name = $(this).attr('name').replace('-' + i + '-','-' + (i-1) + '-');
+        var id = 'id_' + name;
+        $(this).attr({'name': name, 'id': id});
+      });
+      next_form.find('label').each(function() {
+        var newFor = $(this).attr('for').replace('-' + i + '-','-' + (i-1) + '-');
+        $(this).attr('for', newFor);
+      });
+      next_form.find('img').each(function() {
+        var newId = $(this).attr('id').replace('-' + i + '-','-' + (i-1) + '-');
+        $(this).attr('id', newId);
+      });
+      next_form = next_form.next();
+    }       
+  }        
+});
+{% endblock %}
+</script>
+
+
+{% block content %}
+<div class="container">
+  <form method="POST" action="" enctype="multipart/form-data"> {% csrf_token %}
+    <div class="row">
+      <div class="col-sm-6">
+        <h4><b>CREATE PRODUCT</b></h4>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            {% crispy product_create_form %}
+            <input type="submit" value="Add Product" class="btn btn-primary btn-block outline btn-submit">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <button type="button" class="btn btn-default btn-block" id="img-upload">Upload Image</button>
+        {{ product_image_formset.management_form }}
+        <div class="row">
+          {% for image_form in product_image_formset %}
+            <div class="col-sm-6 panel-group">
+              <div class="panel panel-default" style="visibility: hidden">
+                <div class="panel-body">
+                    <a class="close delete_btn">
+                      <span>&times;</span>
+                    </a>
+                  {{ image_form }}
+                  <div class="img-preview-frame">
+                    <div class="img-zone"><img id="image-0-preview" src="#" alt="" /></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% cycle '' '</div><div class="row">' %}
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>
+
+{% endblock %}

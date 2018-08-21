@@ -17,12 +17,18 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.conf.urls import url, include
+
+from products.views import ProductSearchListView
+from user.views import UserDashboardView
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('products/', include('products.urls', namespace='products')),
+    url(r'^admin/', admin.site.urls),
+    url(r'^results/', ProductSearchListView.as_view(), name='product_search_list'),
+    url(r'^products/', include('products.urls', namespace='products')),
+    url(r'^seller/', include('seller.urls', namespace='seller')),
+    url(r'^dashboard/', UserDashboardView.as_view(), name='user_dashboard'),
 ]
 
 if settings.DEBUG:
