@@ -1,6 +1,7 @@
 {% load widget_tweaks %}
+{% load crispy_forms_tags %}
 
-<form method="post" action="{% url 'seller:modal_product_update' form.instance.slug %}" class="js-product-update-form">
+<form method="post" action="{% url 'seller:modal_product_update' form.instance.slug %}" class="js-product-update-form" enctype="multipart/form-data">
   {% csrf_token %}
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -9,7 +10,9 @@
     <h4 class="modal-title">Update product</h4>
   </div>
   <div class="modal-body">
+    <!-- {% crispy form %} -->
     {% include 'seller/partial_product_form.html' %}
+<!--     {% crispy image_form %} -->
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

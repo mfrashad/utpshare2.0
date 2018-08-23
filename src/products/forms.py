@@ -27,35 +27,6 @@ class ProductForm(ModelForm):
         'class': 'tag-field-css-hard-fix',
     })
 
-  # def __init__(self, *args, **kwargs):
-  #   super(ProductForm, self).__init__(*args, **kwargs)
-  #   self.helper = FormHelper()
-  #   self.helper.form_tag = False
-  #   self.helper.layout = Layout(
-  #       Div(
-  #           Div('title', css_class="col-sm-12"),
-  #           css_class = 'row'
-  #       ),
-  #       Div(
-  #           Div('price', css_class="col-sm-6"),
-  #           Div('category', css_class="col-sm-6"),
-  #           css_class = 'row'
-  #       ),
-  #       Div(
-  #           Div('stock_count', css_class="col-sm-12"),
-  #           css_class = 'row'
-  #       ),
-  #       Div(
-  #           Div('description', css_class="col-sm-12"),
-  #           css_class = 'row'
-  #       ),
-  #       Div(
-  #           Div('tags', css_class="col-sm-12"),
-  #           css_class = 'row'
-  #       ),
-  #   )
-
-
 # copied from django/forms/widgets.py
 class FileInput(widgets.Input):
     input_type = 'file'
@@ -80,9 +51,9 @@ class ProductImageForm(ModelForm):
     fields = ['image']
     widgets = {'image': FileInput}
 
-  def __init__(self, *args, **kwargs):
-    super(ProductImageForm, self).__init__(*args, **kwargs)
-    self.fields['image'].label = ""
+  # def __init__(self, *args, **kwargs):
+  #   super(ProductImageForm, self).__init__(*args, **kwargs)
+  #   self.fields['image'].label = ""
 
 
 class BaseProductImageFormSet(BaseModelFormSet):

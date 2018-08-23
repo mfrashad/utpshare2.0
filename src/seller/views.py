@@ -55,7 +55,6 @@ class ProductCreateView(SellerAccountMixin, CreateView):
     product_image_formset = ImageFormSet(request.POST, request.FILES,
                                           queryset=ProductImage.objects.none())
     if product_create_form.is_valid() and product_image_formset.is_valid():
-      print(product_create_form.cleaned_data)
       product_obj = product_create_form.save(commit=False) 
       seller = get_object_or_404(SellerAccount, user=self.request.user)
       product_obj.seller = seller 
@@ -79,10 +78,11 @@ class ProductCreateView(SellerAccountMixin, CreateView):
 
 
 # Modal product 
-def save_product_form(request, form, template_name):
+def save_product_form(request, form, image_form, template_name):
     data = dict()
     if request.method == 'POST':
-        if form.is_valid():
+        global dktp_list_display
+        if form.is_valid() and image_form.is_valid():
             product_obj = form.save(commit=False)
             seller = get_object_or_404(SellerAccount, user=request.user)
             product_obj.seller = seller 
@@ -91,16 +91,39 @@ def save_product_form(request, form, template_name):
               tag_obj, created = Tag.objects.get_or_create(name=tag)
             product_obj.save()
             form.save_m2m()
-            data['form_is_valid'] = True
 
+            image_obj = image_form.cleaned_data.get("image")
+            if image_obj:
+              if image_form.instance.id == None:
+                # Create new
+                image = image_form.cleaned_data.get("image")
+                product_image = ProductImage(product=product_obj, image=image)
+                product_image.save()
+              else:
+                # Update old
+                image_form.save()
+
+            data['form_is_valid'] = True
+            if dktp_list_display=='table':
+              template = 'seller/partial_product_list.html'
+              list_selector = '#dktp-seller-product-list tbody'
+            else:
+              template = 'seller/mb_partial_product_list.html'
+              list_selector = '#mb-seller-product-list'
             products = Product.objects.all()
-            data['html_product_list'] = render_to_string('seller/partial_product_list.html', {
+
+            data['html_product_list'] = render_to_string(template, {
                 'products': products.order_by('-timestamp')
             })
+            data['list_selector'] = list_selector
         else:
             data['form_is_valid'] = False
 
-    context = {'form': form}
+    dktp_list_display = request.GET.get('dktp_list_display', None)
+    context = {
+                'form': form,
+                'image_form': image_form,
+                }
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
 
@@ -109,31 +132,45 @@ def save_product_form(request, form, template_name):
 def product_create(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
+        image_form = ProductImageForm(request.POST, request.FILES)
     else:
         form = ProductForm()
-    return save_product_form(request, form, 'seller/partial_product_create.html')
+        image_form = ProductImageForm()
+    return save_product_form(request, form, image_form, 'seller/partial_product_create.html')
 
 
 def product_update(request, slug):
     product = get_object_or_404(Product, slug=slug)
+    product_image = product.productimage_set.first()
     if request.method == 'POST':
       form = ProductForm(request.POST, instance=product)
+      image_form = ProductImageForm(request.POST, request.FILES, instance=product_image)
     else:
         form = ProductForm(instance=product)
-    return save_product_form(request, form, 'seller/partial_product_update.html')
+        image_form = ProductImageForm(instance=product_image)
+    return save_product_form(request, form, image_form, 'seller/partial_product_update.html')
 
 
 def product_delete(request, slug):
     product = get_object_or_404(Product, slug=slug)
     data = dict()
     if request.method == 'POST':
+        global dktp_list_display
         product.delete()
         data['form_is_valid'] = True  # This is just to play along with the existing code
         products = Product.objects.all()
-        data['html_product_list'] = render_to_string('seller/partial_product_list.html', {
+        if dktp_list_display=='table':
+          template = 'seller/partial_product_list.html'
+          list_selector = '#dktp-seller-product-list tbody'
+        else:
+          template = 'seller/mb_partial_product_list.html'
+          list_selector = '#mb-seller-product-list'
+        data['html_product_list'] = render_to_string(template, {
             'products': products.order_by('-timestamp')
         })
+        data['list_selector'] = list_selector
     else:
+        dktp_list_display = request.GET.get('dktp_list_display', None)
         context = {'product': product}
         data['html_form'] = render_to_string('seller/partial_product_delete.html',
             context,
@@ -190,7 +227,6 @@ class ProductUpdateView(SellerAccountMixin, UpdateView):
 
       product_obj.save()
       product_edit_form.save_m2m()
-
 
       for image_form in product_image_formset:
         # Ignore empty input

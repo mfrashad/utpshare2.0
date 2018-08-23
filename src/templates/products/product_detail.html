@@ -425,7 +425,7 @@ $(".further-info-toggle a").on("click", function(e) {
       <div class="two-col-bar mb-product-title">
         <div class="two-col-bar-left">
           <h4>
-            <strong>{{ object.title }}</strong><br/>
+            <strong>{{ object.title }}</strong>&emsp;<span style="font-size:70%"><a href="{{ object.get_edit_url }}">Edit</a></span><br/>
             <small><strong>babywei&emsp;&emsp;8<span style="font-size:90%;">&ensp;AVAILABLE</span></strong>&emsp;&emsp;<span class="glyphicon glyphicon-share"></span></small>
           </h4>
         </div>
@@ -461,7 +461,7 @@ $(".further-info-toggle a").on("click", function(e) {
       <div class="product-side-info"">
         <div class="two-col-bar product-header-info">
           <div class="two-col-bar-left">
-            <h4><strong>2<span style="font-size:70%;">&ensp;SOLD</span>&emsp;&emsp;8<span style="font-size:70%;">&ensp;AVAILABLE</span></strong></h4>
+            <h4><strong>2<span style="font-size:70%;">&ensp;SOLD</span>&emsp;&emsp;{{ object.stock_count }}<span style="font-size:70%;">&ensp;AVAILABLE</span></strong></h4>
           </div>
           <div class="two-col-bar-right">
             <a href="#"><span class="glyphicon glyphicon-share"></span>&ensp;SHARE</a>

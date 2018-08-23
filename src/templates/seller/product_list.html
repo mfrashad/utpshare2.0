@@ -2,8 +2,38 @@
 {% load static %}
 
 {% block style %}
-.page-header {
-  margin-top: 20px;
+.header-title {
+  margin: 10px 0;
+  font-size: 1.714em;
+}
+.mb-product-list-item {
+  display:none;
+  padding-bottom:20px;
+  border-bottom: 1px solid #ccc;
+}
+.mb-product-title {
+  margin-bottom: 10px;
+}
+
+.two-col-bar {
+  align-items: flex-start;
+}
+.two-col-bar-left {
+  padding: 5px 10px 5px 0;
+  flex: 1;
+}
+.two-col-bar-right {
+  padding: 5px 10px;
+}
+
+
+@media screen and (max-width: 700px) {
+  #dktp-seller-product-list {
+    display:none;
+  }
+  .mb-product-list-item {
+    display:flex;
+  }
 }
 {% endblock %}
 
@@ -14,7 +44,7 @@
 
 {% block content %}
 <div class="container">
-  <h2 class="page-header">{{ seller|title }}'s Inventory</h1>
+  <div class="header-title">{{ seller|title }}'s Inventory</div>
 
   <!-- ADD BUTTON -->
   <p>
@@ -26,22 +56,29 @@
     </button>
   </p>
 
-  <!-- PRODUCT LIST -->
-  <table class="table table-bordered table-hover table-responsive" id="product-table">
-    <thead>
-      <tr>
-        <th>Product Name</th>
-        <th>Image</th>
-        <th>RM</th>
-        <th>Tags</th>
-        <th>Date created</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% include 'seller/partial_product_list.html' %}
-    </tbody>
-  </table>
+  <div class="seller-product-list">
+    <!-- DESKTOP PRODUCT LIST -->
+    <table class="table table-bordered table-hover table-responsive" id="dktp-seller-product-list">
+      <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>Image</th>
+          <th>RM</th>
+          <th>Tags</th>
+          <th>Date created</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% include 'seller/partial_product_list.html' %}
+      </tbody>
+    </table>
+
+    <!-- MOBILE PRODUCT LIST -->
+    <div id="mb-seller-product-list">
+      {% include 'seller/mb_partial_product_list.html' %}
+    </div>
+  </div>
 </div>
 
 <!-- GENERIC MODAL VIEW -->

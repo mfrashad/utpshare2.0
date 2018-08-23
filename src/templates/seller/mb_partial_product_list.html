@@ -1,0 +1,20 @@
+{% for product in products %} 
+  <div class="two-col-bar mb-product-list-item">
+    <div class="two-col-bar-left">
+      <div class="mb-product-title"><a href='{{ product.get_absolute_url }}'>{{ product.title|truncatechars:50 }}</a></div>
+      <button type="button"
+              class="btn btn-warning btn-sm js-update-product"
+              data-url="{% url 'seller:modal_product_update' product.slug %}">
+        <span class="glyphicon glyphicon-pencil"></span> Edit
+      </button>
+      <button type="button"
+              class="btn btn-danger btn-sm js-delete-product"
+              data-url="{% url 'seller:modal_product_delete' product.slug %}">
+        <span class="glyphicon glyphicon-trash"></span> Delete
+      </button>
+    </div>
+    <div class="two-col-bar-right">
+      <a href='{{ product.get_absolute_url }}'><img src='{{ product.get_image_url }}' style='max-width:100px; max-height: 100px;'/></a>
+    </div>
+  </div>
+{% endfor %}
