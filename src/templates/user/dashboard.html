@@ -1,6 +1,39 @@
 {% extends 'base.html' %}
 
+{% block style %}
+a:link, a:hover, a:visited, a:active {
+  text-decoration: none;
+}
+.tag-style a:link, .tag-style a:hover, .tag-style a:visited, .tag-style a:active {
+  color: white;
+}
+
+.tag-style {
+  background: #058;
+  color:#fff;
+  padding: 1px 8px;
+  border-radius: 10px;
+  display: inline-block;
+  margin: 3px 1px;
+}
+{% endblock %}
+
 {% block content %}
-{{ products }}
-{{ top_tags }}
+
+<div class="container">
+  <h2>Suggested Products</h2>
+  <div class="tn-set-container">
+    {% for product in products %}
+      {% include "products/product_thumbnail.html" with product=product %}
+    {% empty %}
+      <p>No Products yet.</p>
+    {% endfor %}
+  </div>
+
+  <h4 style="margin-top:40px;">Top Tags</h4>
+  {% for tag in top_tags %}
+    <div class="tag-style"><a href="{{ tag.get_absolute_url }}">{{ tag }}</a></div>
+  {% endfor %}
+</div>
+
 {% endblock %}

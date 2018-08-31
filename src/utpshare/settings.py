@@ -36,18 +36,22 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Third party apps
     'crispy_forms',
     'tagulous',
+    'registration',
     # My apps
     'products',
     'seller',
     'billing',
     'analytics',
-    'widget_tweaks',
+    'carts',
+    'orders',
     # Others
+    'widget_tweaks',
     'django.forms',
 ]
 
@@ -155,3 +159,8 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "media_roo
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
+
+
+ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window; you may, of course, use a different value.
+REGISTRATION_AUTO_LOGIN = True # Automatically log the user in.
+SITE_ID=1

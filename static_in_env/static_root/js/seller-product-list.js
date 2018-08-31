@@ -3,8 +3,12 @@ $(function () {
   /* Functions */
   var loadForm = function () {
     var btn = $(this);
+    var dktp_list_display = $(".seller-product-list").children("#dktp-seller-product-list").css("display");
     $.ajax({
       url: btn.attr("data-url"),
+      data: {
+        'dktp_list_display':dktp_list_display
+      },
       type: 'get',
       dataType: 'json',
       beforeSend: function () {
@@ -19,20 +23,24 @@ $(function () {
 
   var saveForm = function () {
     var form = $(this);
+    var formData = new FormData(this);
     $.ajax({
       url: form.attr("action"),
-      data: form.serialize(),
+      data: formData,
       type: form.attr("method"),
       dataType: 'json',
       success: function (data) {
         if (data.form_is_valid) {
-          $("#product-table tbody").html(data.html_product_list);
+          $(data.list_selector).html(data.html_product_list);
           $("#modal-product").modal("hide");
         }
         else {
           $("#modal-product .modal-content").html(data.html_form);
         }
-      }
+      },
+      cache: false,
+      contentType: false,
+      processData: false
     });
     // "false" prevents the browser to perform a full HTTP POST to the server
     return false;
@@ -44,10 +52,10 @@ $(function () {
   $("#modal-product").on("submit", ".js-product-create-form", saveForm);
 
   // Update product
-  $("#product-table").on("click", ".js-update-product", loadForm);
+  $(".seller-product-list").on("click", ".js-update-product", loadForm);
   $("#modal-product").on("submit", ".js-product-update-form", saveForm);
 
   // Delete book
-  $("#product-table").on("click", ".js-delete-product", loadForm);
+  $(".seller-product-list").on("click", ".js-delete-product", loadForm);
   $("#modal-product").on("submit", ".js-product-delete-form", saveForm);
 });

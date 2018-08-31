@@ -18,25 +18,17 @@ class UserDashboardView(View):
     except:
       pass
 
-    try:
-      owned = request.user.myproducts.products.all()
-    except:
-      pass
-
     if tag_views:
       top_tags = [x.tag for x in tag_views]
       products = Product.objects.filter(tags__in=top_tags)
-      if owned:
-        products = products.exclude(pk__in=owned)
 
-      if products.count() < 5:
+      if products.count() <= 5:
         products = Product.objects.all().order_by("?")
-        if owned:
-          products = products.exclude(pk__in=owned)
-        products = products[:10]
+        products = products[:8]
       else:
-        products = products.distinct()
+        products=products.distinct()
         products = sorted(products, key= lambda x: random.random())
+        products = products[:8]
 
     context = {
       "products": products,

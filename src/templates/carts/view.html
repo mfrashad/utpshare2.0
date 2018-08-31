@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block style %}
+.cart-container {
+  margin-top: 20px;
+}
+{% endblock %}
+
+<script>
+{% block jquery %}
+$(".item-qty").change(function(){
+  var item_slug = $(this).prev("input[type='hidden']").val();
+  var qty = $(this).val()
+  var data = {
+    item_slug: item_slug,
+    qty: qty,
+  }
+  console.log(data);
+  $.ajax({
+    type: "GET", // "POST"
+    url: "{% url 'cart' %}",
+    data: data,
+    success: function(data) {
+      console.log(data);
+      if (data.delete_item){
+        $("#item-"+item_slug).fadeOut();
+        $("#subtotal").text(data.subtotal);
+        $("#delivery_fee").text(data.delivery_fee);
+        $("#cart_total").text(data.cart_total);
+      } else {
+        $("#line-total-"+item_slug).text(data.line_total);
+        $("#subtotal").text(data.subtotal);
+        $("#delivery_fee").text(data.delivery_fee);
+        $("#cart_total").text(data.cart_total);
+      }
+
+      if (data.total_items == 0) {
+        $(".table").fadeOut();
+        var template = "<h2>Your cart is empty</h2>"
+        $(".cart-container").html(template);
+      }
+      var message = ""
+      if(data.add_item) {
+        message = "Item added"
+      } else if (data.delete_item) {
+        message = "Item removed"
+      } else {
+        message = "Item updated"
+      }
+      showFlashMessage(message);
+
+    }, 
+    error: function(response, error) {
+      console.log(response)
+      console.log(error)
+      $("#add-cart-form").submit()
+    }
+  })
+});
+{% endblock %}
+</script>
+
+
+{% block content %}
+<div class='container cart-container'>
+  {% if cart.cartitem_set.count < 1 %}
+    {% include "carts/empty_cart.html" %}
+  {% else %}
+    <table class='table'> 
+      {% for cartitem in cart.cartitem_set.all %}
+        <tr id='item-{{ cartitem.item.slug }}'>
+          <td>{{ cartitem.item.title }}</td>
+          <td>
+            <form action="." method="GET" >
+              <input type='hidden' name='item_slug' value='{{ cartitem.item.slug }}' />
+              <input type='number' class='item-qty' name='qty' value='{{ cartitem.quantity }}' min='1' max='100' autocomplete='off' />
+            </form>
+          </td>
+          <td>RM <span id='line-total-{{ cartitem.item.slug }}'>{{ cartitem.line_total }}</span></td>
+          <td class='text-right' ><a href='{{ cartitem.remove }}'>X</a></td>
+        </tr>
+      {% endfor %}
+      <tr>
+        <td colspan='4' class='text-right'>Subtotal: RM <span id='subtotal'>{{ cart.subtotal }}</span></td>
+      </tr>
+      <tr>
+        <td colspan='4' class='text-right'>Delivery Fee: RM <span id='delivery_fee'>{{ cart.delivery_fee }}</td>
+      </tr>
+      <tr>
+        <td colspan='4' class='text-right'>Total: RM <span id='cart_total'>{{ cart.cart_total }}</td>
+      </tr>
+      <tr>
+        <td colspan='4' class='text-right'><a class='btn btn-warning' href="{% url 'checkout' %}">Checkout </a></td>
+      </tr>
+    </table>
+  {% endif %}
+</div>
+
+{% endblock %}

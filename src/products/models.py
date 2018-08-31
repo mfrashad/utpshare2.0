@@ -27,7 +27,7 @@ class Product(models.Model):
   stock_count = models.PositiveSmallIntegerField(default=1)
   category = models.ForeignKey('Category', blank=True, null=True, on_delete=models.CASCADE)
   timestamp = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
-  tags = tagulous.models.TagField(to="Tag")
+  tags = tagulous.models.TagField(to="Tag", null=True, blank=True)
 
   objects = ProductManager()
 
@@ -47,7 +47,6 @@ class Product(models.Model):
     else:
       return '/static/img/default_image.png'
 
-
   def get_html_price(self):
     if self.sale_price is not None:
       html_text = "<span class='sale-price'>%s</span>&emsp;<span class='og-price small'>%s</span>"\
@@ -55,6 +54,12 @@ class Product(models.Model):
     else:
       html_text = "<span class='price'>%s</span>" %(self.price)
     return mark_safe(html_text) 
+
+  def add_to_cart(self):
+    return "%s?item_slug=%s&qty=1" %(reverse("cart"), self.slug)
+
+  def remove_from_cart(self):
+    return "%s?item_slug=%s&qty=1&delete_item=True" %(reverse("cart"), self.slug)
 
 def create_slug(instance, new_slug=None):
   # 1st time coming in
