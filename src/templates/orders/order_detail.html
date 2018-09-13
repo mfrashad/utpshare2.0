@@ -3,8 +3,7 @@
 
 
 {% block content %}
-
-{% include "orders/order_summary_short.html" with order=order %}
-
-<p><b>Please print for your records</b></p>
+<div class="container">
+{% include "orders/order_summary.html" with order=order %}
+</div>
 {% endblock %}

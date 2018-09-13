@@ -44,12 +44,11 @@ class OrderList(LoginRequiredMixin, ListView):
 
 class UserAddressCreateView(CartOrderMixin, CreateView):
   model = UserAddress
-  template_name = "forms.html"
+  template_name = "orders/user_address_create.html"
   fields = '__all__'
 
   def get_checkout_user(self):
       user_check_id = self.request.session.get("user_checkout_id")
-      print(user_check_id)
       user_checkout = UserCheckout.objects.get(id=user_check_id)
       return user_checkout
 

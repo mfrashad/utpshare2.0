@@ -190,9 +190,14 @@
     height: 100%;
 }
 
-.panel-body {
+.panel-body-default {
   background:#e7e7e7;
 }
+
+.panel-body-success {
+  background:#dff0d8;
+}
+
 .tag-field-css-hard-fix {
   width:100%;
   height:auto;

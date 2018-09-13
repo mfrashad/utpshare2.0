@@ -44,3 +44,7 @@ class UserAddressForm(forms.ModelForm):
     fields = [
       'address',
     ]
+
+  def __init__(self, *args, **kwargs):
+    super(UserAddressForm, self).__init__(*args, **kwargs)
+    self.fields['address'].label = "Address/Pickup location"

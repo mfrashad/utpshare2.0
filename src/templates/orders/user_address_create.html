@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class='container'>
+  <div class='row'>
+    <div class='col-sm-6 col-sm-offset-3'>
+      <div class="panel panel-default panel-margin">
+        <div class="panel-body panel-body-default">
+          <p class="lead" style='color:#337ab7;'><strong>Please insert your address/preferred pickup location below.</strong></p>
+          <form method='POST' action=''>{% csrf_token %}
+            {{ form|crispy }}
+            <input class='btn btn-primary' type='submit' value='Submit' />
+            <a class="btn btn-default" href="{% url 'checkout' %}">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

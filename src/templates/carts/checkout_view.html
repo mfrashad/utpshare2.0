@@ -2,40 +2,51 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 
+{% block style %}
+.addr-info {
+  background:#d9edf7;
+}
+
+.link-style a:link, .link-style a:hover, .link-style a:visited, .link-style a:active {
+  text-decoration: none;
+  color: #333;
+}
+
+{% endblock %}
+
 {% block content %}
 <div class="container">
   {% if not user_can_continue %}
     <div class='col-sm-6'>
-      <p class='lead'>Continue as Guest</p>
-      <form method='POST' action=''>{% csrf_token %}
-        {{ form|crispy }}
-        <input type='submit' class='btn btn-success' value='Continue as Guest' />
-      </form>
+      <div class="panel panel-default panel-margin">
+        <div class="panel-body panel-body-default">
+          <p class='lead' style='color:#337ab7;'><strong>Continue as Guest</strong></p>
+          <form method='POST' action=''>{% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" class="btn btn-primary btn-block btn-submit" value="Continue" >
+          </form>
+        </div>
+      </div>
     </div>
-
+    
     <div class='col-sm-6'>
-      <p class='lead'>Login to Continue</p>
-      <form method='POST' action="{% url 'auth_login' %}"> {% csrf_token %}
-        {{ login_form|crispy }}
-        <input type='hidden' name='next' value='{{ next_url }}' />
-        <input type='submit' class='btn btn-success' value='Login' />
-      </form>
-      <p class='text-center'>
-      <p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
-      <p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
-      </p>
+      <div class="panel panel-success panel-margin">
+        <div class="panel-body panel-body-success">
+          <p class='lead' style='color:#4CAF50;'><strong>Login to Continue</strong></p>
+          <form method='POST' action="{% url 'auth_login' %}"> {% csrf_token %}
+            {{ login_form|crispy }}
+            <input type='hidden' name='next' value='{{ next_url }}' />
+            <input type='submit' class='btn btn-success btn-block' value='Login' />
+          </form>
+          <p class='text-center'>
+          <p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
+          <p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
+          </p>
+        </div>
+      </div>
     </div>
   {% else %}
-    <div class='col-sm-4 col-sm-offset-4 text-center'>
-      {% include "orders/order_summary_short.html" with order=order %}
-      <p><a href='{% url "user_address_create" %}'>Change an Address</a></p>
-      <br/>
-      <form method='POST' action="{% url 'checkout_final' %}">{% csrf_token %}
-        <input type='hidden' name='payment_token' value='ABC' />
-        <p><b><button type='submit'>Complete Order</button></b>
-        </p>
-      </form>
-    </div>
+    {% include "orders/order_summary.html" with order=order checkout_view=True %}
   {% endif %}
 </div>
 {% endblock %}

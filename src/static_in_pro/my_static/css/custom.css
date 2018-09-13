@@ -190,9 +190,18 @@
     height: 100%;
 }
 
-.panel-body {
+.panel-margin {
+  margin-top: 20px;
+}
+
+.panel-body-default {
   background:#e7e7e7;
 }
+
+.panel-body-success {
+  background:#d9ffb3
+}
+
 .tag-field-css-hard-fix {
   width:100%;
   height:auto;

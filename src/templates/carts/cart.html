@@ -66,6 +66,7 @@ $(".item-qty").change(function(){
   {% if cart.cartitem_set.count < 1 %}
     {% include "carts/empty_cart.html" %}
   {% else %}
+    <h4><strong>YOUR CART</strong></h4>
     <table class='table'> 
       {% for cartitem in cart.cartitem_set.all %}
         <tr id='item-{{ cartitem.item.slug }}'>
