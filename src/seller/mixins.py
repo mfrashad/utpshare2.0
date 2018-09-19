@@ -1,19 +1,19 @@
 import datetime
+import pytz
 
 from django.db.models import Count, Min, Sum, Avg, Max
 
-from billing.models import Transaction
 from utpshare.mixins import LoginRequiredMixin
 from products.models import Product
+from sales.models import Sale
 
 from .models import SellerAccount
-
 
 
 class SellerAccountMixin(LoginRequiredMixin):
   account = None
   products = []
-  transactions = []
+  sales = []
 
   def get_account(self):
     user = self.request.user
@@ -29,23 +29,42 @@ class SellerAccountMixin(LoginRequiredMixin):
     self.products = products
     return products
 
-  def get_transactions(self):
-    products = self.get_products()
-    transactions = Transaction.objects.filter(product__in=products)
-    return transactions
+  def get_sales(self):
+    account = self.get_account()
+    sales = Sale.objects.filter(seller=account).order_by('-timestamp')
+    self.sales = sales
+    return sales
 
-  def get_transactions_today(self):
+  def get_sales_today(self):
     today = datetime.date.today()
-    today_min = datetime.datetime.combine(today, datetime.time.min)
-    today_max = datetime.datetime.combine(today, datetime.time.max)
-    return self.get_transactions().filter(timestamp__range=(today_min, today_max))
+    today_min_naive = datetime.datetime.combine(today, datetime.time.min)
+    today_max_naive = datetime.datetime.combine(today, datetime.time.max)
+    timezone = pytz.timezone("Asia/Kuala_Lumpur")
+    today_min_aware = timezone.localize(today_min_naive)
+    today_max_aware = timezone.localize(today_max_naive)
+    return self.get_sales().filter(timestamp__range=(today_min_aware, today_max_aware))
+
+  def get_sales_recent(self):
+    sales_today = self.get_sales_today()
+    return self.get_sales().exclude(pk__in=sales_today)[:5]
 
   def get_total_sales(self):
-    transactions = self.get_transactions().aggregate(Sum("price"), Avg("price"))
-    total_sales = transactions["price__sum"]
+    sales = self.get_sales()
+    total_sales = 0
+    for sale in sales:
+      total_sales += sale.compute_sale_total()
     return total_sales
 
-  def get_today_sales(self):
-    transactions = self.get_transactions_today().aggregate(Sum("price"))
-    total_sales = transactions["price__sum"]
+  def get_total_sales_today(self):
+    sales = self.get_sales_today()
+    total_sales = 0
+    for sale in sales:
+      total_sales += sale.compute_sale_total()
+    return total_sales
+
+  def get_total_sales_recent(self):
+    sales = self.get_sales_recent()
+    total_sales = 0
+    for sale in sales:
+      total_sales += sale.compute_sale_total()
     return total_sales

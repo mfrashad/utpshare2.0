@@ -46,10 +46,10 @@ INSTALLED_APPS = [
     # My apps
     'products',
     'seller',
-    'billing',
     'analytics',
     'carts',
     'orders',
+    'sales',
     # Others
     'widget_tweaks',
     'django.forms',
@@ -132,7 +132,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kuala_Lumpur'
 
 USE_I18N = True
 

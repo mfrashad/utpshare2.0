@@ -5,7 +5,7 @@ from .views import (
         SellerDashboard,
         SellerProductListView,
         SellerProductDetailRedirectView,
-        SellerTransactionListView,
+        SellerSalesListView,
         ProductCreateView,
         ProductUpdateView,
         )
@@ -14,7 +14,9 @@ from .views import (
 
 urlpatterns = [
   url(r'^$', SellerDashboard.as_view(), name='dashboard'),
-  url(r'^transactions/$', SellerTransactionListView.as_view(), name='transactions'),
+  url(r'^sales/$', SellerSalesListView.as_view(), name='sales_list'),
+  url(r'^sales/(?P<pk>\d+)/$', views.sale_detail, name='modal_sale_detail'),
+
   url(r'^products/$', SellerProductListView.as_view(), name='product_list'),
   url(r'^products/add/$', ProductCreateView.as_view(), name='product_create'),
   url(r'^products/(?P<slug>[\w-]+)/edit/$', ProductUpdateView.as_view(), name='product_update'),

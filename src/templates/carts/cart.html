@@ -70,7 +70,7 @@ $(".item-qty").change(function(){
     <table class='table'> 
       {% for cartitem in cart.cartitem_set.all %}
         <tr id='item-{{ cartitem.item.slug }}'>
-          <td>{{ cartitem.item.title }}</td>
+          <td>{{ cartitem.item.title }} - {{ cartitem.item.seller.user.username }}</td>
           <td>
             <form action="." method="GET" >
               <input type='hidden' name='item_slug' value='{{ cartitem.item.slug }}' />

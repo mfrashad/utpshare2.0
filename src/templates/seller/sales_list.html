@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block javascript %}
+<script src="{% static 'js/seller-sale-func.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h3>You made {{ sales.count }} sales in total. <br>
+    <small>Amount: RM {{ total_sales }}</small></h3>
+  {% include "seller/sales_list_template.html" with sales=sales showDate=True %}
+</div>
+
+<!-- GENERIC MODAL VIEW -->
+<div class="modal fade" id="modal-sale">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+{% endblock %}

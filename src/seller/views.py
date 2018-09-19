@@ -7,9 +7,8 @@ from django.views.generic.base import RedirectView
 from django.views.generic.edit import FormMixin, CreateView, UpdateView
 from django.views.generic.list import ListView
 
-
-from billing.models import Transaction
 from products.models import Product, Category, ProductImage, Tag
+from sales.models import Sale
 from products.forms import ProductForm, ProductImageForm, BaseProductImageFormSet
 
 from .forms import NewSellerForm
@@ -178,6 +177,25 @@ def product_delete(request, slug):
         )
     return JsonResponse(data)
 
+
+# Modal Sale Detail
+def sale_detail(request, pk):
+  sale = get_object_or_404(Sale, pk=pk)
+  data = dict()
+  if request.method == 'POST':
+    sale.status = "approved"
+    sale.save()
+    data['sale_id'] = pk
+    data['new_sale_status'] = sale.status
+
+  else:
+    context = {'sale': sale}
+    data['sale_detail_template'] = render_to_string('seller/sale_detail_template.html',
+        context,
+        request=request,
+    )
+  return JsonResponse(data)
+
 class ProductUpdateView(SellerAccountMixin, UpdateView):
   model = Product
   template_name = "seller/product_update.html"
@@ -252,12 +270,15 @@ class ProductUpdateView(SellerAccountMixin, UpdateView):
     return redirect("products:products")
 
 
-class SellerTransactionListView(SellerAccountMixin, ListView):
-  model = Transaction
-  template_name = "seller/transaction_list_view.html"
+class SellerSalesListView(SellerAccountMixin, ListView):
+  model = Sale
+  template_name = "seller/sales_list.html"
 
-  def get_queryset(self):
-    return self.get_transactions()
+  def get_context_data(self, *args, **kwargs):
+    context = super(SellerSalesListView, self).get_context_data(*args, **kwargs)
+    context["sales"] = self.get_sales()
+    context["total_sales"] = self.get_total_sales()
+    return context
 
 
 
@@ -282,19 +303,22 @@ class SellerDashboard(SellerAccountMixin, FormMixin, View):
       active = account.active
     if not exists and not active:
       context["title"] = "Apply for Account"
+      context["seller_status"] = "invalid"
       context["apply_form"] = apply_form
     elif exists and not active:
       context["title"] = "Account Pending"
+      context["seller_status"] = "pending"
     elif exists and active:
       context["title"] = "Seller Dashboard"
-      
-      #products = Product.objects.filter(seller=account)
+      context["seller_status"] = "valid"
       context["products"] = self.get_products()[:5]
-      transactions_today = self.get_transactions_today()
-      context["transactions_today"] = transactions_today
-      context["transactions"] = self.get_transactions().exclude(pk__in=transactions_today)[:5]
-      context["today_sales"] = self.get_today_sales()
+
+      context["sales"] = self.get_sales()
+      context["sales_today"] = self.get_sales_today()
+      context["sales_recent"] = self.get_sales_recent()
       context["total_sales"] = self.get_total_sales()
+      context["total_sales_today"] = self.get_total_sales_today()
+      context["total_sales_recent"] = self.get_total_sales_recent()
 
     else:
       pass

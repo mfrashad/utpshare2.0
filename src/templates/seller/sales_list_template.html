@@ -1,0 +1,81 @@
+<table class="table table-hover table-responsive dktp-sale-list">
+  <thead>
+    <tr>
+      <th>Order Date</th>
+      <th>Order ID</th>
+      <th>Buyer</th>
+      <th>Items</th>
+      <th>Total</th>
+      <th>Order Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sale in sales %}
+      <tr style="background:#fff">
+        {% if showDate %}
+          <td class="col-sm-2">{{ sale.timestamp|date:"D, d M Y" }}</td>
+        {% else %}
+          <td class="col-sm-2">{{ sale.timestamp|timesince }} ago</td>
+        {% endif %}
+        <td class="col-sm-2">{{ sale.order.order_id }}<br/>
+          <a href="javascript:void(0)" class="js-show-sale-detail" data-url="{% url 'seller:modal_sale_detail' sale.id %}">&#9654;&nbsp;Details</a>
+        </td>
+        <td class="col-sm-2">{{ sale.order.user.get_checkout_user|truncatechars:15 }}</td>
+        <td class="col-sm-3">
+          {% for seller_item in sale.get_seller_item_list %}
+            <div class="sm-tn-img-frame">
+              <img class="tn-img" src="{{ seller_item.item.get_image_url }}" />
+            </div>
+          {% endfor %}
+        </td>
+        <td class="col-sm-1">{{ sale.compute_sale_total }}</td>
+        <td class="col-sm-2">
+          <p class="sale-status-{{ sale.id }}">{{ sale.status }}</p>
+          {% if sale.status == 'pending' %}
+            <button type="submit" 
+                    class="btn btn-warning btn-sm js-approve-order"
+                    data-url="{% url 'seller:modal_sale_detail' sale.id %}">Approve
+            </button>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+
+{% for sale in sales %}
+  <div class="two-col-bar mb-sale-list">
+    <div class="two-col-bar-left">
+      <p>
+        {% if showDate %}
+          <em>{{ sale.timestamp|date:"D, d M Y" }}</em>
+        {% else %}
+          <em>{{ sale.timestamp|timesince }} ago</em>
+        {% endif %}
+        <br/>
+        <strong>{{ sale.order.user.get_checkout_user|truncatechars:15 }}</strong> ordered a total of <strong>RM {{ sale.compute_sale_total }}</strong>
+        <br/>
+        <a href="javascript:void(0)" class="js-show-sale-detail" data-url="{% url 'seller:modal_sale_detail' sale.id %}">&#9654;&nbsp;Details</a>
+      </p>
+      {% for seller_item in sale.get_seller_item_list %}
+        <div class="sm-tn-img-frame">
+          <img class="tn-img" src="{{ seller_item.item.get_image_url }}" />
+        </div>
+      {% endfor %}
+    </div>
+    <div class="two-col-bar-right">
+      <p class="sale-status-{{ sale.id }}">{{ sale.status }}</p>
+      {% if sale.status == 'pending' %}
+        <button type="submit" 
+                class="btn btn-warning btn-sm js-approve-order"
+                data-url="{% url 'seller:modal_sale_detail' sale.id %}">Approve
+        </button>
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
+
+

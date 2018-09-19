@@ -16,6 +16,8 @@ from orders.models import UserCheckout, Order, UserAddress
 from products.models import Product
 from carts.models import Cart, CartItem
 
+from sales.models import Sale
+
 class ItemCountView(View):
   def get(self, request, *args, **kwargs):
     if request.is_ajax():
@@ -57,8 +59,9 @@ class CartView(SingleObjectMixin, View):
     add_item = False
     if item_slug:
       item = get_object_or_404(Product, slug=item_slug)
+      seller = item.seller 
       qty = request.GET.get("qty", 1)
-      cart_item, add_item = CartItem.objects.get_or_create(cart=cart, item=item)
+      cart_item, add_item = CartItem.objects.get_or_create(cart=cart, item=item, seller=seller)
       if delete_item:
         cart_item.delete()
       else:
@@ -206,8 +209,19 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 class CheckoutFinalView(CartOrderMixin, View):
   def post(self, request, *args, **kwargs):
     order = self.get_order()
+
+    seller_list = []
+    for cartitem in order.cart.cartitem_set.all():
+      seller = cartitem.item.seller
+      if seller not in seller_list:
+        seller_list.append(seller)
+
+    for seller in seller_list:
+      # cart_item = order.cart.cartitem_set.filter(seller=seller)
+      # print(cart_item)
+      sale = Sale.objects.create(seller=seller, order=order)
+
     if request.POST.get("payment_token") == "ABC":
-      order.mark_completed()
       del request.session["cart_id"]
       del request.session["order_id"]
     return redirect("order_detail", pk=order.pk)

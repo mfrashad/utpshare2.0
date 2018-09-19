@@ -5,10 +5,12 @@ from django.db import models
 from django.db.models.signals import pre_save, post_save, post_delete
 
 from products.models import Product
+from seller.models import SellerAccount
 
 # Create your models here.
 
 class CartItem(models.Model):
+  seller = models.ForeignKey(SellerAccount)
   cart = models.ForeignKey("Cart")
   item = models.ForeignKey(Product)
   quantity = models.PositiveIntegerField(default=1)

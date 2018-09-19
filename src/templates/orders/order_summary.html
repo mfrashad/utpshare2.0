@@ -1,6 +1,8 @@
 <div class='col-sm-4 col-sm-offset-4'>
   <h4 style="text-align:center">Order Summary</h4>
 
+  <div style="text-align:center;color:#3339;"><em>Order ID</em>: {{ order.order_id }}</div>
+
   <div style="background:#f2dede;padding:5px;">
     <p class="text-center"><strong>{% if order.cart.cartitem_set.count == 1 %}{{ order.cart.cartitem_set.count }} Item {% else %}{{ order.cart.cartitem_set.count }} Items {% endif %}</strong></p>
     <table class='table'>

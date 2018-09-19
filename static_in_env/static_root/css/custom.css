@@ -190,12 +190,16 @@
     height: 100%;
 }
 
+.panel-margin {
+  margin-top: 20px;
+}
+
 .panel-body-default {
   background:#e7e7e7;
 }
 
 .panel-body-success {
-  background:#dff0d8;
+  background:#d9ffb3
 }
 
 .tag-field-css-hard-fix {
@@ -203,6 +207,58 @@
   height:auto;
   margin:0;
   padding:0;
+}
+
+
+/*seller dashboard && sales_list*/
+.sm-tn-img-frame {
+  height: 70px;
+  width: 70px;
+  position: relative;
+  float: left;
+  margin: 2px 2px;
+}
+
+.mb-sale-list {
+  display:none;
+  padding-bottom:20px;
+  border-bottom: 1px solid #ccc;
+}
+
+.modal-seller-item-list {
+  display:flex;
+  padding-bottom:20px;
+}
+
+.two-col-bar {
+  align-items: flex-start;
+}
+.two-col-bar-left {
+  padding: 5px 10px 5px 0;
+  flex: 1;
+}
+.two-col-bar-right {
+  padding: 5px 10px;
+}
+
+.title-banner {
+  background:#e6e6ff;
+  padding: 20px 0;
+  text-align: center;
+  font-size: 1.65em;
+  color: #7779;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+@media screen and (max-width: 700px) {
+  .dktp-sale-list {
+    display:none;
+  }
+  .mb-sale-list {
+    display:flex;
+  }
 }
 
 
