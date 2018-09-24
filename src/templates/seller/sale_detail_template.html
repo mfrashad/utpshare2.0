@@ -2,32 +2,19 @@
   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
-  <h4 class="modal-title">Order <strong>#{{ sale.order.order_id }}</strong></h4>
+  <h4 class="modal-title">Order <strong>#{{ sale.order.first.order_id }}</strong></h4>
 </div>
 <div class="modal-body">
   <strong class="sale-status-{{ sale.id }}">Status:</strong> {{ sale.status|title }} <br/>
   <strong>Date:</strong> {{ sale.timestamp|date:"d M Y (D) g:i a" }} <br/>
-  <strong>Buyer:</strong> {{ sale.order.user.get_checkout_user }} <br/>
-  <strong>Address:</strong> {{ sale.order.user_address.address }} <br/>
+  <strong>Buyer:</strong> {{ sale.order.first.user.get_checkout_user }} <br/>
+  <strong>Address:</strong> {{ sale.order.first.user_address.address }} <br/>
   <strong>Amount:</strong> RM {{ sale.compute_sale_total }} <br/>
   <strong>Items:</strong>
   {% for seller_item in sale.get_seller_item_list %}
-  <div class="two-col-bar modal-seller-item-list">
-    <div class="two-col-bar-left">
-      <p>{{ seller_item.item.title }}<br/>
-        <small><em>RM {{ seller_item.item.price }} x {{ seller_item.quantity }} = {{ seller_item.line_total }}</em></small>
-      </p>
-    </div>
-    <div class="two-col-bar-right">
-      <div class="sm-tn-img-frame">
-        <img class="tn-img" src="{{ seller_item.item.get_image_url }}" />
-      </div>
-    </div>
-  </div>
-  
-    
+    {% include "seller/item_detail_template.html" %}
   {% endfor %}
 </div>
-<div class="modal-footer" style="clear:both;">
+<div class="modal-footer"">
   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 </div>

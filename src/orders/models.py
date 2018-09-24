@@ -44,6 +44,7 @@ class Order(models.Model):
   user_address = models.ForeignKey(UserAddress, null=True)
   order_total = models.DecimalField(max_digits=50, decimal_places=2)
   order_id= models.CharField(max_length=120, blank= True, default='')
+  time_created = models.DateTimeField(auto_now_add=True)
 
   def __str__(self):
     return str(self.order_id)

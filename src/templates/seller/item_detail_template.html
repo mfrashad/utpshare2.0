@@ -1,0 +1,12 @@
+<div class="two-col-bar modal-seller-item-list">
+  <div class="two-col-bar-left">
+    <p>{{ seller_item.item.title }}<br/>
+      <small><em>RM {{ seller_item.item.price }} x {{ seller_item.quantity }} = {{ seller_item.line_total }}</em></small>
+    </p>
+  </div>
+  <div class="two-col-bar-right">
+    <div class="sm-tn-img-frame">
+      <img class="tn-img" src="{{ seller_item.item.get_image_url }}" />
+    </div>
+  </div>
+</div>

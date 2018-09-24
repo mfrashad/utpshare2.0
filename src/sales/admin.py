@@ -4,7 +4,7 @@ from .models import Sale
 # Register your models here.
 
 class SaleAdmin(admin.ModelAdmin):
-  list_display = ["__str__", "seller", "order", "timestamp"]
+  list_display = ["__str__", "seller", "timestamp"]
   class Meta:
     model = Sale
 

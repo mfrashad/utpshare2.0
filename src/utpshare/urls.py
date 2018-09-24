@@ -22,10 +22,7 @@ from django.conf.urls import url, include
 from products.views import ProductSearchListView
 from user.views import UserDashboardView
 from carts.views import CartView, ItemCountView, CheckoutView, CheckoutFinalView
-from orders.views import (
-                    UserAddressCreateView, 
-                    OrderList, 
-                    OrderDetail)
+from orders.views import UserAddressCreateView
 
 
 urlpatterns = [
@@ -34,9 +31,7 @@ urlpatterns = [
     url(r'^results/', ProductSearchListView.as_view(), name='product_search_list'),
     url(r'^products/', include('products.urls', namespace='products')),
     url(r'^seller/', include('seller.urls', namespace='seller')),
-    url(r'^dashboard/', UserDashboardView.as_view(), name='user_dashboard'),
-    url(r'^orders/$', OrderList.as_view(), name='orders'),
-    url(r'^orders/(?P<pk>\d+)/$', OrderDetail.as_view(), name='order_detail'),
+    url(r'^user/', include('user.urls', namespace='user')),
     url(r'^cart/$', CartView.as_view(), name='cart'),
     url(r'^cart/count/$', ItemCountView.as_view(), name='item_count'),
     url(r'^checkout/$', CheckoutView.as_view(), name='checkout'),

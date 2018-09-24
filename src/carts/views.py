@@ -219,12 +219,13 @@ class CheckoutFinalView(CartOrderMixin, View):
     for seller in seller_list:
       # cart_item = order.cart.cartitem_set.filter(seller=seller)
       # print(cart_item)
-      sale = Sale.objects.create(seller=seller, order=order)
+      sale = Sale.objects.create(seller=seller)
+      sale.order.add(order)
 
     if request.POST.get("payment_token") == "ABC":
       del request.session["cart_id"]
       del request.session["order_id"]
-    return redirect("order_detail", pk=order.pk)
+    return redirect("user:order_detail", pk=order.pk)
 
 
   # def get(self, request, *args, **kwargs):

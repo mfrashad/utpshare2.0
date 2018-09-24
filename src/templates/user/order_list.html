@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block style %}
+.orderls-outer-content {
+  background-color: #fff;
+  padding: 15px;
+  margin-top: 5px;
+}
+.orderls-header {
+  background-color: #f2f2f2;
+  padding: 10px 5px 10px 5px;
+  margin-bottom: 5px;
+}
+.orderls-content {
+  background-color: #fff;
+  padding: 15px;
+}
+.mb-orderls-content {
+  display:none;
+}
+.mb-orderls-content-header {
+  margin: 0 0 10px 0;
+  border-top: 1px solid #c7c7c7; 
+}
+
+@media screen and (max-width: 800px) {
+  .mb-orderls-content {
+    display:initial;
+  }
+  .hideContent {
+    display:none;
+  }
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2>ORDERS</h2>
+
+  <div class="orderls-outer-content">
+    <div>
+      <div class="orderls-header hideContent">
+        <div class="row">
+          <div class="col-sm-8">Product</div>
+          <div class="col-sm-2">Seller</div>
+          <div class="col-sm-2">Order Status</div>
+        </div>
+      </div>
+
+      {% for user_order in user_orders %}
+        <div>
+          <div class="orderls-header">
+            <div class="row">
+              <div class="col-sm-6">
+                <strong>Order ID:</strong> <a href="{% url 'user:order_detail' pk=user_order.id %}">{{ user_order.order_id }}</a><br>
+                <strong>Date:</strong> {{ user_order.sale_set.first.timestamp|date:"d M Y (D) g:i a" }}
+              </div>
+              <div class="col-sm-6">
+                <strong>Amount:</strong> RM {{ user_order.order_total }} <br>
+                <strong>Delivery:</strong> RM {{ user_order.cart.delivery_fee }}
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-orderls-content">
+            {% for sale in user_order.sale_set.all %}
+              <div class="mb-orderls-content-header">
+                Items from <strong>{{ sale.seller }}</strong> are <strong>{{ sale.status }}</strong>.
+              </div>
+              {% for seller_item in sale.get_seller_item_list %}
+                {% include "seller/item_detail_template.html" %}
+              {% endfor %}
+            {% endfor %}
+          </div>
+
+          <div class="orderls-content hideContent">
+            {% for sale in user_order.sale_set.all %} 
+            <div class="row">
+              <div class="col-sm-8">
+                {% for seller_item in sale.get_seller_item_list %}
+                  {% include "seller/item_detail_template.html" %}
+                {% endfor %}
+              </div>
+              <div class="col-sm-2">
+                {{ sale.seller }} 
+              </div>
+              <div class="col-sm-2">
+                {{ sale.status }} 
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+        </div>
+      {% empty %}
+        <p class="text-center">No orders yet.</p>
+      {% endfor %}
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

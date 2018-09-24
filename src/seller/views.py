@@ -109,10 +109,13 @@ def save_product_form(request, form, image_form, template_name):
             else:
               template = 'seller/mb_partial_product_list.html'
               list_selector = '#mb-seller-product-list'
-            products = Product.objects.all()
+
+            user = request.user
+            account = SellerAccount.objects.filter(user=user)
+            products = Product.objects.filter(seller=account).order_by('-timestamp')
 
             data['html_product_list'] = render_to_string(template, {
-                'products': products.order_by('-timestamp')
+                'products': products
             })
             data['list_selector'] = list_selector
         else:
@@ -157,7 +160,10 @@ def product_delete(request, slug):
         global dktp_list_display
         product.delete()
         data['form_is_valid'] = True  # This is just to play along with the existing code
-        products = Product.objects.all()
+        
+        user = request.user
+        account = SellerAccount.objects.filter(user=user)
+        products = Product.objects.filter(seller=account).order_by('-timestamp')
         if dktp_list_display=='table':
           template = 'seller/partial_product_list.html'
           list_selector = '#dktp-seller-product-list tbody'

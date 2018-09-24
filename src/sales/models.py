@@ -13,7 +13,7 @@ SALE_STATUS_CHOICES = (
 class Sale(models.Model):
   seller = models.ForeignKey(SellerAccount, on_delete=models.CASCADE)
   timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
-  order = models.ForeignKey(Order, on_delete=models.CASCADE)
+  order = models.ManyToManyField(Order)
   status = models.CharField(max_length=120, choices=SALE_STATUS_CHOICES, default='pending')
 
   def __str__(self):
@@ -21,7 +21,7 @@ class Sale(models.Model):
 
   def get_seller_item_list(self):
     seller = self.seller
-    seller_item_list = self.order.cart.cartitem_set.filter(seller=seller)
+    seller_item_list = self.order.first().cart.cartitem_set.filter(seller=seller)
     return seller_item_list
 
   def compute_sale_total(self):
