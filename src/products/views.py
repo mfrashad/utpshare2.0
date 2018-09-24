@@ -5,6 +5,7 @@ from django.views.generic.list import ListView
 
 from .models import Product, Category, ProductImage, Tag
 from analytics.models import TagView
+from collections import OrderedDict
 import random
 
 # Create your views here.
@@ -63,22 +64,24 @@ class ProductSearchListView(ListView):
   def get_queryset(self, *args, **kwargs):
     qs = super(ProductSearchListView, self).get_queryset(**kwargs)
     query = self.request.GET.get("q")
-    qs = qs.filter(
-        Q(title__icontains=query)|
-        Q(description__icontains=query)
-      ).order_by("-timestamp")
-    return qs 
+    title_matches = qs.filter(Q(title__icontains=query)).order_by("-timestamp")
+    description_matches = qs.filter(Q(description__icontains=query)).order_by("-timestamp")
+    category_matches = qs.filter(Q(category__title__icontains=query)).distinct().order_by("-timestamp")
+    tags_matches = qs.filter(Q(tags__name__icontains=query)).distinct().order_by("-timestamp")
+    qs = list(title_matches) + list(description_matches) + list(category_matches) + list(tags_matches)
+    return list(OrderedDict.fromkeys(qs))
 
   def get_context_data(self, *args, **kwargs):
     context = super(ProductSearchListView, self).get_context_data(*args, **kwargs)
-    count = self.get_queryset().count()
+    product_list = self.get_queryset()
+    context['product_list'] = product_list
+    count = len(product_list)
     if count<1:
       context["title"] = "No results found."
     elif count==1:
       context["title"] = "%s %s" %(count, "result found.")
     else:
       context["title"] = "%s %s" %(count, "results found.")
-    
     return context
 
 
