@@ -7,7 +7,7 @@
 <div class="modal-body">
   <strong class="sale-status-{{ sale.id }}">Status:</strong> {{ sale.status|title }} <br/>
   <strong>Date:</strong> {{ sale.timestamp|date:"d M Y (D) g:i a" }} <br/>
-  <strong>Buyer:</strong> {{ sale.order.first.user.get_checkout_user }} <br/>
+  <strong>Buyer:</strong> {{ sale.order.first.user }} <br/>
   <strong>Address:</strong> {{ sale.order.first.user_address.address }} <br/>
   <strong>Amount:</strong> RM {{ sale.compute_sale_total }} <br/>
   <strong>Items:</strong>

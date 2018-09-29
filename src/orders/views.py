@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, FormView
 
 from .forms import UserAddressForm
 from .mixins import CartOrderMixin, LoginRequiredMixin
-from .models import UserAddress, UserCheckout, Order
+from .models import UserAddress, Order
 
 
 
@@ -15,10 +15,6 @@ class UserAddressCreateView(CartOrderMixin, CreateView):
   template_name = "orders/user_address_create.html"
   fields = '__all__'
 
-  def get_checkout_user(self):
-      user_check_id = self.request.session.get("user_checkout_id")
-      user_checkout = UserCheckout.objects.get(id=user_check_id)
-      return user_checkout
 
   def get_context_data(self, *args, **kwargs):
     context = super(UserAddressCreateView, self).get_context_data(*args, **kwargs)
@@ -29,8 +25,7 @@ class UserAddressCreateView(CartOrderMixin, CreateView):
   def post(self, request, *args, **kwargs):
     form = UserAddressForm(request.POST)
     if form.is_valid():
-      print("3")
-      user = self.get_checkout_user()
+      user = request.user
       address = form.cleaned_data["address"]
       user_address = UserAddress.objects.get(user=user)
       user_address.address = address

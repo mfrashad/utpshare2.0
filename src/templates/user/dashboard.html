@@ -1,9 +1,41 @@
 {% extends 'base.html' %}
 
 {% block style %}
+.orderls-outer-content {
+  background-color: #fff;
+  padding: 15px;
+  margin-top: 5px;
+}
+.orderls-header {
+  background-color: #f2f2f2;
+  padding: 10px 5px 10px 5px;
+  margin-bottom: 5px;
+}
+.orderls-content {
+  background-color: #fff;
+  padding: 15px;
+}
+.mb-orderls-content {
+  display:none;
+}
+.mb-orderls-content-header {
+  margin: 0 0 10px 0;
+  border-top: 1px solid #c7c7c7; 
+}
+
+@media screen and (max-width: 800px) {
+  .mb-orderls-content {
+    display:initial;
+  }
+  .hideContent {
+    display:none;
+  }
+}
+
 a:link, a:hover, a:visited, a:active {
   text-decoration: none;
 }
+
 .tag-style a:link, .tag-style a:hover, .tag-style a:visited, .tag-style a:active {
   color: white;
 }
@@ -19,21 +51,36 @@ a:link, a:hover, a:visited, a:active {
 {% endblock %}
 
 {% block content %}
-
+<div class="title-banner">{{ user }}'s Dashboard</div>
 <div class="container">
-  <h2>Suggested Products</h2>
-  <div class="tn-set-container">
-    {% for product in products %}
-      {% include "products/product_thumbnail.html" with product=product %}
-    {% empty %}
-      <p>No Products yet.</p>
-    {% endfor %}
-  </div>
+  {% if user_orders %}
+    <h4>Recent Orders</h4>
+    {% include "user/order_list_template.html" %}
+    <a href="{% url 'user:orders' %}" class="btn btn-default btn-block">View All Orders</a>
+  {% endif %}
 
-  <h4 style="margin-top:40px;">Top Tags</h4>
-  {% for tag in top_tags %}
-    <div class="tag-style"><a href="{{ tag.get_absolute_url }}">{{ tag }}</a></div>
-  {% endfor %}
+  {% if products %}
+    <h4 style="margin-top:40px;">Suggested Products</h4>
+    <div class="tn-set-container">
+      {% for product in products %}
+        {% include "products/product_thumbnail.html" with product=product %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center">
+      <h4 style="margin-top:40px;">Just getting started?</h4>
+      <a href="{% url 'products:products' %}">Explore</a>
+    </div>
+  {% endif %}
+
+  {% if top_tags %}
+    <div style="margin:40px 0 100px;">
+      <h4>Top Tags</h4>
+      {% for tag in top_tags %}
+        <div class="tag-style"><a href="{{ tag.get_absolute_url }}">{{ tag }}</a></div>
+      {% endfor %}
+    </div>
+  {% endif %}
 </div>
 
 {% endblock %}

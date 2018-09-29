@@ -12,36 +12,40 @@
   color: #333;
 }
 
+.panel-e7 {
+  background:#e7e7e7;
+  padding:20px;
+  margin:20px 0;
+}
+
 {% endblock %}
 
 {% block content %}
 <div class="container">
   {% if not user_can_continue %}
-    <div class='col-sm-6'>
-      <div class="panel panel-default panel-margin">
-        <div class="panel-body panel-body-default">
-          <p class='lead' style='color:#337ab7;'><strong>Continue as Guest</strong></p>
-          <form method='POST' action=''>{% csrf_token %}
-            {{ form|crispy }}
-            <input type="submit" class="btn btn-primary btn-block btn-submit" value="Continue" >
-          </form>
-        </div>
-      </div>
-    </div>
-    
-    <div class='col-sm-6'>
-      <div class="panel panel-success panel-margin">
-        <div class="panel-body panel-body-success">
-          <p class='lead' style='color:#4CAF50;'><strong>Login to Continue</strong></p>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="panel-e7">
+          <h2>Login</h2>
           <form method='POST' action="{% url 'auth_login' %}"> {% csrf_token %}
             {{ login_form|crispy }}
             <input type='hidden' name='next' value='{{ next_url }}' />
-            <input type='submit' class='btn btn-success btn-block' value='Login' />
+            <input type='submit' class='btn btn-primary btn-block' value='Login' />
           </form>
+          <hr>
           <p class='text-center'>
-          <p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
-          <p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
+            <p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
           </p>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="panel-e7">
+          <h2>Register for free!</h2>
+          <form method="POST" action="{% url 'registration_register' %}"> {% csrf_token %}
+            {{ registration_form|crispy }}
+            <input class='btn btn-block btn-primary' type="submit" value="Register" />
+          </form>
         </div>
       </div>
     </div>

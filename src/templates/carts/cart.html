@@ -21,7 +21,6 @@ $(".item-qty").change(function(){
     url: "{% url 'cart' %}",
     data: data,
     success: function(data) {
-      console.log(data);
       if (data.delete_item){
         $("#item-"+item_slug).fadeOut();
         $("#subtotal").text(data.subtotal);

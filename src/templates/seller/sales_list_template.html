@@ -20,7 +20,7 @@
         <td class="col-sm-2">{{ sale.order.first.order_id }}<br/>
           <a href="javascript:void(0)" class="js-show-sale-detail" data-url="{% url 'seller:modal_sale_detail' sale.id %}">&#9654;&nbsp;Details</a>
         </td>
-        <td class="col-sm-2">{{ sale.order.first.user.get_checkout_user|truncatechars:15 }}</td>
+        <td class="col-sm-2">{{ sale.order.first.user|truncatechars:15 }}</td>
         <td class="col-sm-3">
           {% for seller_item in sale.get_seller_item_list %}
             <div class="sm-tn-img-frame">
@@ -56,7 +56,7 @@
           <em>{{ sale.timestamp|timesince }} ago</em>
         {% endif %}
         <br/>
-        <strong>{{ sale.order.first.user.get_checkout_user|truncatechars:15 }}</strong> ordered a total of <strong>RM {{ sale.compute_sale_total }}</strong>
+        <strong>{{ sale.order.first.user|truncatechars:15 }}</strong> ordered a total of <strong>RM {{ sale.compute_sale_total }}</strong>
         <br/>
         <a href="javascript:void(0)" class="js-show-sale-detail" data-url="{% url 'seller:modal_sale_detail' sale.id %}">&#9654;&nbsp;Details</a>
       </p>

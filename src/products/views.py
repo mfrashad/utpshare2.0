@@ -1,5 +1,6 @@
 from django.db.models import Q
 from django.views.generic import View
+from django.views.generic.base import RedirectView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
@@ -9,6 +10,11 @@ from collections import OrderedDict
 import random
 
 # Create your views here.
+
+class ProductListRedirectView(RedirectView):
+    permanent = True
+    def get_redirect_url(self, *args, **kwargs):
+        return "/products"
 
 class TagListView(ListView):
   model = Tag

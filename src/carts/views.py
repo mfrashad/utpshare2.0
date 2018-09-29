@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
+from registration.forms import RegistrationForm
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -11,7 +12,7 @@ from django.views.generic.edit import FormMixin
 
 from orders.forms import GuestCheckoutForm
 from orders.mixins import CartOrderMixin
-from orders.models import UserCheckout, Order, UserAddress
+from orders.models import Order, UserAddress
 
 from products.models import Product
 from carts.models import Cart, CartItem
@@ -52,10 +53,12 @@ class CartView(SingleObjectMixin, View):
       cart.save()
     return cart
 
+
   def get(self, request, *args, **kwargs):
     cart = self.get_or_create_cart()
     item_slug = request.GET.get("item_slug")
     delete_item = request.GET.get("delete_item", False)
+    delete_order = request.GET.get("delete_order", False)
     add_item = False
     if item_slug:
       item = get_object_or_404(Product, slug=item_slug)
@@ -64,12 +67,29 @@ class CartView(SingleObjectMixin, View):
       cart_item, add_item = CartItem.objects.get_or_create(cart=cart, item=item, seller=seller)
       if delete_item:
         cart_item.delete()
+        if cart.items.count() == 0:
+          try:
+            order=Order.objects.get(cart=cart)
+            order.delete()
+            del request.session["order_id"]
+          except:
+            pass
+          cart.delete()
+          del request.session["cart_id"]
       else:
         cart_item.quantity = qty
         cart_item.save()
 
       if not request.is_ajax():
         return HttpResponseRedirect(reverse("cart"))
+
+    if delete_order:
+      order=Order.objects.get(cart=cart)
+      order.delete()
+      del request.session["order_id"]
+      cart.delete()
+      del request.session["cart_id"]
+      return HttpResponseRedirect(reverse("cart"))
 
     if request.is_ajax():
       try:
@@ -111,98 +131,35 @@ class CartView(SingleObjectMixin, View):
     # return HttpResponseRedirect("/products/")
 
 
-class CheckoutView(CartOrderMixin, FormMixin, DetailView):
+class CheckoutView(CartOrderMixin, FormMixin, View):
   model = Cart
   template_name = "carts/checkout_view.html"
-  form_class = GuestCheckoutForm
 
-  def get_object(self, *args, **kwargs):
-    cart = self.get_cart()
-    if cart == None:
-      return None
-    return cart
-
-  def post(self, request, *args, **kwargs):
-    self.object = self.get_object()
-    form = self.get_form()
-    if form.is_valid():
-      email = form.cleaned_data.get("email")
-      user_checkout, created = UserCheckout.objects.get_or_create(email=email)
-      request.session["user_checkout_id"] = user_checkout.id
-      return self.form_valid(form)
-    else:
-      return self.form_invalid(form)
-
-  def get_context_data(self, *args, **kwargs):
-    context = super(CheckoutView, self).get_context_data(*args, **kwargs)
+  def get(self, request, *args, **kwargs):
+    context = {}
     user_can_continue = False
-    user_is_authenticated = False
-    user_checkout_id = self.request.session.get("user_checkout_id")
-    reset_user_checkout_id = self.request.GET.get("reset_user_checkout_id")
-    order_user = None
-    if (reset_user_checkout_id == 'active') and not self.request.user.is_authenticated():
-      user_checkout_id = None
-
+    order = self.get_order()
     if self.request.user.is_authenticated():
       user_can_continue = True
-      user_is_authenticated = True
-      user_checkout, created = UserCheckout.objects.get_or_create(email=self.request.user.email)
-      user_checkout.user = self.request.user
-      user_checkout.save()
-      self.request.session["user_checkout_id"] = user_checkout.id
-    elif not self.request.user.is_authenticated() and user_checkout_id == None:
-      context["login_form"] = AuthenticationForm()
-      context["next_url"] = self.request.build_absolute_uri()
-    else:
-      pass
-
-    user_checkout_id = self.request.session.get("user_checkout_id")
-    reset_user_checkout_id = self.request.GET.get("reset_user_checkout_id")
-    if (reset_user_checkout_id == 'active') and not self.request.user.is_authenticated():
-      user_checkout_id = None
-      
-    order = self.get_order()
-    if user_checkout_id != None:
-      user_can_continue = True
-      user_checkout = UserCheckout.objects.get(id=user_checkout_id)
-      user_address = UserAddress.objects.get_or_create(user=user_checkout)[0]
+      user_address = UserAddress.objects.get_or_create(user=self.request.user)[0]
+      if user_address.address == None:
+        return redirect("user_address_create")
+      order.user = self.request.user
       order.user_address = user_address
-
-      order.user = user_checkout
-      if self.request.user.is_authenticated():
-        order_user = order.user.user.username 
-      else:
-        order.user.email = user_checkout.email
-        order_user = order.user.email
       order.save()
+    else:
+      context["login_form"] = AuthenticationForm()
+      context["registration_form"] = RegistrationForm()
+      context["next_url"] = self.request.build_absolute_uri()
+
     context["order"] = order
     context["user_can_continue"] = user_can_continue
-    context["user_is_authenticated"] = user_is_authenticated
-    context["order_user"] = order_user
-    context["form"] = self.get_form()
-    return context
+
+    template = self.template_name
+    return render(request, template, context)
 
   def get_success_url(self):
     return reverse("checkout")
-
-
-  def get(self, request, *args, **kwargs):
-    get_data  = super(CheckoutView, self).get(request, *args, **kwargs)
-    cart = self.get_object()
-    if cart == None:
-      return redirect("cart")
-    new_order = self.get_order()
-    user_checkout_id = self.request.session.get("user_checkout_id")
-    if user_checkout_id != None:
-      user_checkout = UserCheckout.objects.get(id=user_checkout_id)
-      user_address = UserAddress.objects.get_or_create(user=user_checkout)[0]
-      if user_address.address == None:
-        return redirect("user_address_create")
-      new_order.user = user_checkout
-      new_order.user_address = user_address
-      new_order.save()
-    return get_data
-
 
 
 
@@ -223,6 +180,8 @@ class CheckoutFinalView(CartOrderMixin, View):
       sale.order.add(order)
 
     if request.POST.get("payment_token") == "ABC":
+      order.status = "completed"
+      order.save()
       del request.session["cart_id"]
       del request.session["order_id"]
     return redirect("user:order_detail", pk=order.pk)

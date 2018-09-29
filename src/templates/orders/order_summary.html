@@ -24,27 +24,13 @@
     <p class="text-center"><strong>Deliver to</strong></p>
     <table class='table'>
       {% if checkout_view == True %}
-        <tr>
-          <td class="col-xs-8">{{ order_user }}</td>
-          {% if not user_is_authenticated %}
-            <td class="col-xs-4" style="text-align:right">
-              <form method='GET' action="{{ next_url }}">
-                <input type="hidden" name="reset_user_checkout_id" value="active" />
-                <input type='submit' value='Change' />
-              </form>
-            </td>
-          {% endif %}
-        </tr>
+        <tr><td class="col-xs-8">{{ order.user }}</td></tr>
         <tr>
           <td class="col-xs-8">{{ order.user_address.address }}</td>
           <td class="col-xs-4" style="text-align:right"><div class="link-style"><a href='{% url "user_address_create" %}'><input type='button' value='Change' /></a></div></td>
         </tr>
       {% else %}
-        {% if order.user.user.username %}
-          <tr class="text-center"><td>{{ order.user.user.username }}</td></tr>
-        {% else %}
-          <tr class="text-center"><td>{{ order.user.email }}</td></tr>
-        {% endif %}
+        <tr class="text-center"><td>{{ order.user }}</td></tr>
         <tr class="text-center"><td>{{ order.user_address.address }}</td></tr>
       {% endif %}
     </table>

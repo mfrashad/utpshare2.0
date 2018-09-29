@@ -19,7 +19,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.conf.urls import url, include
 
-from products.views import ProductSearchListView
+from products.views import ProductSearchListView, ProductListRedirectView
 from user.views import UserDashboardView
 from carts.views import CartView, ItemCountView, CheckoutView, CheckoutFinalView
 from orders.views import UserAddressCreateView
@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^results/', ProductSearchListView.as_view(), name='product_search_list'),
+    url(r'^$', ProductListRedirectView.as_view()),
     url(r'^products/', include('products.urls', namespace='products')),
     url(r'^seller/', include('seller.urls', namespace='seller')),
     url(r'^user/', include('user.urls', namespace='user')),

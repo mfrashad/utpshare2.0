@@ -8,7 +8,7 @@ from django.shortcuts import render
 
 from utpshare.mixins import LoginRequiredMixin
 from products.models import Product
-from orders.models import UserCheckout, Order
+from orders.models import Order
 
 class UserDashboardView(View):
   def get(self, request, *args, **kwargs):
@@ -24,18 +24,23 @@ class UserDashboardView(View):
     if tag_views:
       top_tags = [x.tag for x in tag_views]
       products = Product.objects.filter(tags__in=top_tags)
+      products=products.distinct()
+      products = sorted(products, key= lambda x: random.random())
+      products = products[:8]
 
-      if products.count() <= 5:
-        products = Product.objects.all().order_by("?")
-        products = products[:8]
-      else:
-        products=products.distinct()
-        products = sorted(products, key= lambda x: random.random())
-        products = products[:8]
+    #  ORDER LIST
+    order_id = self.request.session.get("order_id")
+    try:
+      user_orders = Order.objects.filter(user=request.user).filter(status="completed").order_by("-time_created")[:2]
+    except:
+      user_orders = None
 
     context = {
       "products": products,
       "top_tags": top_tags,
+      "user": request.user,
+      "order_id": order_id,
+      "user_orders": user_orders,
     }
     return render(request, "user/dashboard.html", context)
 
@@ -43,15 +48,15 @@ class UserDashboardView(View):
 
 class OrderList(LoginRequiredMixin, View):
   def get(self, request, *args, **kwargs):
-    user_email = request.user.email
+    order_id = self.request.session.get("order_id")
     try:
-      user_checkout = UserCheckout.objects.get(email=user_email)
-      user_orders = Order.objects.filter(user=user_checkout).order_by("-time_created")
+      user_orders = Order.objects.filter(user=request.user).order_by("-time_created")
     except:
       user_orders = None
 
     context = {
       "user_orders": user_orders,
+      "order_id": order_id,
     }
     return render(request, "user/order_list.html", context)
 
@@ -61,16 +66,8 @@ class OrderDetail(DetailView):
   template_name = "user/order_detail.html"
 
   def dispatch(self, request, *args, **kwargs):
-    try:
-      user_check_id = self.request.session.get("user_checkout_id")
-      user_checkout = UserCheckout.objects.get(id=user_check_id)
-    except UserCheckout.DoesNotExist:
-      user_checkout = UserCheckout.objects.get(user=request.user)
-    except:
-      user_checkout = None
-
     obj = self.get_object()
-    if obj.user == user_checkout and user_checkout is not None:
+    if obj.user == request.user and request.user is not None:
       return super(OrderDetail, self).dispatch(request, *args, **kwargs)
     else:
       raise Http404

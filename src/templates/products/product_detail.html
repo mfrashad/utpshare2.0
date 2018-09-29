@@ -375,7 +375,6 @@ $(".further-info-toggle a").on("click", function(e) {
 $("#add-cart-btn").click(function(e){
   e.preventDefault();
   var formData = $("#add-cart-form").serialize();
-  console.log(formData);
   $.ajax({
     type: "GET",
     url: "{% url 'cart' %}",

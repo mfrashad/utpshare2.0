@@ -1,9 +1,11 @@
 {% extends "base.html" %}
+{% load  %}
 {% load i18n %}
 
 {% block content %}
-<div class="container">
-  <p>{% trans "You are now registered. Activation email sent." %}</p>
+<div class="container text-center">
+  <h2 style="padding:10px 0;">{% trans "Thanks for registering with us." %}</h2>
+  <a href="{% url 'auth_login' %}">Login</a>
 </div>
 
 {% endblock %}
