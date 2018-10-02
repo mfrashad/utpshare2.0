@@ -21,8 +21,8 @@ class ProductImageAdmin(admin.ModelAdmin):
     model = ProductImage
 
 class SubcategoryAdmin(admin.ModelAdmin):
-  list_display = ["__str__", "parent_category"]
-  list_filter = ["parent_category"]
+  list_display = ["__str__", "category"]
+  list_filter = ["category"]
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductImage, ProductImageAdmin)

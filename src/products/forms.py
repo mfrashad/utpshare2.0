@@ -4,7 +4,7 @@ from django import forms
 from django.forms import ModelForm, widgets
 # from django.forms.formsets import BaseFormSet
 from django.forms.models import BaseModelFormSet
-from .models import  Product, ProductImage
+from .models import  Product, ProductImage, Subcategory
 
 from .models import ProductImage
 
@@ -17,12 +17,14 @@ class ProductForm(ModelForm):
             "stock_count",
             "price",
             "category",
+            "subcategory",
             "description",
             "tags",
     ]
 
   def __init__(self, *args, **kwargs):
     super(ProductForm, self).__init__(*args, **kwargs)
+    self.fields['subcategory'].queryset = Subcategory.objects.none()
     self.fields['tags'].widget.attrs.update({
         'class': 'tag-field-css-hard-fix',
     })

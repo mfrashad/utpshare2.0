@@ -7,7 +7,7 @@ from django.views.generic.base import RedirectView
 from django.views.generic.edit import FormMixin, CreateView, UpdateView
 from django.views.generic.list import ListView
 
-from products.models import Product, Category, ProductImage, Tag
+from products.models import Product, Category, Subcategory, ProductImage, Tag
 from sales.models import Sale
 from products.forms import ProductForm, ProductImageForm, BaseProductImageFormSet
 
@@ -129,7 +129,10 @@ def save_product_form(request, form, image_form, template_name):
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
 
-
+def load_subcategories(request):
+    category_id = request.GET.get('category')
+    subcategories = Subcategory.objects.filter(category__pk=category_id).order_by('title')
+    return render(request, 'seller/subcategory_dropdown_list_options.html', {'subcategories': subcategories})
 
 def product_create(request):
     if request.method == 'POST':

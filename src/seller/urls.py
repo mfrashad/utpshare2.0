@@ -24,6 +24,7 @@ urlpatterns = [
   url(r'^products/modal_add/$', views.product_create, name='modal_product_create'),
   url(r'^products/(?P<slug>[\w-]+)/modal_edit/$', views.product_update, name='modal_product_update'),
   url(r'^products/(?P<slug>[\w-]+)/modal_delete/$', views.product_delete, name='modal_product_delete'),
+  url(r'ajax/load-subcategories/', views.load_subcategories, name='ajax_load_subcategories')
   
 ]
 

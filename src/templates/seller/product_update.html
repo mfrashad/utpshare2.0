@@ -162,13 +162,28 @@ $(".delete_btn").click(function(){
   }        
 });
 
+$("#id_category").change(function () {
+  var url = $("#productForm").attr("data-subcategories-url");  // get the url of the `load_cities` view
+  var categoryId = $(this).val();  // get the selected country ID from the HTML input
+  $.ajax({                       // initialize an AJAX request
+    url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+    data: {
+      'category': categoryId       // add the country id to the GET parameters
+    },
+    success: function (data) {   // `data` is the return of the `load_cities` view function
+      $("#id_subcategory").html(data);  // replace the contents of the city input with the data that came from the server
+    }
+  });
+
+});
+
 {% endblock %}
 </script>
 
 
 {% block content %}
 <div class="container">
-  <form method="POST" action="" enctype="multipart/form-data"> {% csrf_token %}
+  <form method="POST" action="" id="productForm" data-subcategories-url="{% url 'seller:ajax_load_subcategories' %}" enctype="multipart/form-data"> {% csrf_token %}
     <div class="row">
       <div class="col-sm-6">
         <h4><b>EDIT PRODUCT</b></h4>
