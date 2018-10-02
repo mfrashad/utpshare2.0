@@ -141,4 +141,16 @@ def category_pre_save_receiver(sender, instance, *args, **kwargs):
 
 pre_save.connect(category_pre_save_receiver, sender=Category)
 
+class Subcategory(models.Model):
+  title = models.CharField(max_length=50, unique=True)
+  slug = models.SlugField(blank=True, unique=True)
+  parent_category = models.ForeignKey(Category)
+  
+  def __str__(self):
+    return self.title
 
+def subcategory_pre_save_receiver(sender, instance, *args, **kwargs):
+  if not instance.slug:
+    instance.slug = slugify(instance.title)
+
+pre_save.connect(subcategory_pre_save_receiver, sender=Subcategory)
