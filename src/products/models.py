@@ -26,6 +26,7 @@ class Product(models.Model):
   sale_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
   stock_count = models.PositiveSmallIntegerField(default=1)
   category = models.ForeignKey('Category', blank=True, null=True, on_delete=models.CASCADE)
+  subcategory = models.ForeignKey('Subcategory', blank=True, null=True, on_delete=models.CASCADE)
   timestamp = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
   tags = tagulous.models.TagField(to="Tag", null=True, blank=True)
 
