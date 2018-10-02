@@ -90,12 +90,12 @@ $(".filter-button").click(function(){
         <div class="dropdown">
           <div class="gallery-nav-btn filter-button" data-filter="{{ category.slug }}">
             <a href="#">{{ category }}</a>
-            {% if category.category_set.all %}
+            {% if category.subcategory_set.all %}
               <i class="fa fa-caret-down"></i>
             {% endif %}
           </div>
           <div class="dropdown-content">
-            {% for subcategory in category.category_set.all %}
+            {% for subcategory in category.subcategory_set.all %}
               <div class="gallery-nav-btn filter-button" data-filter="{{ subcategory.slug }}"><a href="#">{{ subcategory }}</a></div>
             {% endfor %}
           </div>
@@ -110,7 +110,7 @@ $(".filter-button").click(function(){
         {% include "products/product_thumbnail.html" with product=product %}
       {% endfor %}
 
-      {% for subcategory in category.category_set.all %}
+      {% for subcategory in category.subcategory_set.all %}
         {% for product in subcategory.product_set.all %}
           {% include "products/product_thumbnail.html" with product=product %}
         {% endfor %}
