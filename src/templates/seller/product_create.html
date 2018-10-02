@@ -181,7 +181,7 @@ $("#id_category").change(function () {
 
 {% block content %}
 <div class="container">
-  <form method="POST" action="" id="productForm" data-subcategories-url="{% url 'seller:ajax_load_subcategories' %}" enctype="multipart/form-data"> {% csrf_token %}
+  <form method="POST" action="" id="productForm" data-subcategories-url="{% url 'seller:ajax_load_subcategories' %}" enctype="multipart/form-data" novalidate> {% csrf_token %}
     <div class="row">
       <div class="col-sm-6">
         <h4><b>CREATE PRODUCT</b></h4>

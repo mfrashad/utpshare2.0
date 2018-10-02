@@ -29,6 +29,15 @@ class ProductForm(ModelForm):
         'class': 'tag-field-css-hard-fix',
     })
 
+    if 'category' in self.data:
+      try:
+        category_id = int(self.data.get('category'))
+        self.fields['subcategory'].queryset = Subcategory.objects.filter(category_id=category_id).order_by('title')
+      except (ValueError, TypeError):
+        pass  # invalid input from the client; ignore and fallback to empty subcategory queryset
+    elif self.instance.pk:
+      self.fields['subcategory'].queryset = self.instance.category.subcategory_set.order_by('title')
+
 # copied from django/forms/widgets.py
 class FileInput(widgets.Input):
     input_type = 'file'
